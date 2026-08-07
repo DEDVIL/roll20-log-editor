@@ -1,12 +1,25 @@
 /*
- TRPG Log Studio
- Cleaner
+TRPG Log Studio
 
- 로그 문장 정리 모듈
+Cleaner
+
+로그 문장 정리 모듈
+
+=================================
 */
 
 
-function cleanText(text) {
+
+/*
+=================================
+
+텍스트 정리
+
+=================================
+*/
+
+
+function cleanText(text){
 
 
     if(!text)
@@ -26,10 +39,10 @@ function cleanText(text) {
 
 
     result =
-result.replace(
-/This message (has been hidden|is hidden)\.?/gi,
-""
-);
+    result.replace(
+        /This message (has been hidden|is hidden)\.?/gi,
+        ""
+    );
 
 
 
@@ -37,50 +50,31 @@ result.replace(
 
     /*
     =====================
-    말줄임표 교정
+    점삼육 교정
+
+    ...
+    ......
+    ........
+    
     =====================
     */
 
 
-    // 긴 점 먼저 처리
     result =
     result.replace(
-        /\.{6,}/g,
-        "⋯⋯"
-    );
-
-
-    result =
-    result.replace(
-        /\.{3}/g,
+        /\.{3,}/g,
         "⋯"
     );
 
 
 
-    /*
-    =====================
-    중복 점삼육 처리
-
-    ......
-    .....
-
-    =====================
-    */
-
-
     result =
     result.replace(
-        /⋯+/g,
-        function(match){
-
-            if(match.length >= 3)
-                return "⋯⋯";
-
-            return "⋯";
-
-        }
+        /⋯{2,}/g,
+        "⋯⋯"
     );
+
+
 
 
 
@@ -116,12 +110,16 @@ result.replace(
 
 
 
+
+
     /*
     =====================
     괄호 정리
 
     ( 웃음 )
+
     ↓
+
     (웃음)
 
     =====================
@@ -133,6 +131,8 @@ result.replace(
         /\(\s+(.*?)\s+\)/g,
         "($1)"
     );
+
+
 
 
 
@@ -164,6 +164,7 @@ result.replace(
 
     return result.trim();
 
+
 }
 
 
@@ -171,16 +172,20 @@ result.replace(
 
 
 
+
+
+
 /*
-================================
+=================================
 
 전체 로그 정리
 
-================================
+=================================
 */
 
 
 function cleanLog(data){
+
 
 
     const cleaned = [];
@@ -193,20 +198,39 @@ function cleanLog(data){
 
 
 
+
+
+
     data.forEach(item=>{
 
 
+
         /*
-        숨김 제거
+        =====================
+        숨김 메시지 제거
+
+        =====================
         */
 
 
         if(
             item.text
             &&
-            item.text.includes(
-            "This message has been hidden"
-            )
+            /This message (has been hidden|is hidden)/i
+            .test(item.text)
+        ){
+
+            return;
+
+        }
+
+
+
+        if(
+            item.html
+            &&
+            /This message (has been hidden|is hidden)/i
+            .test(item.html)
         ){
 
             return;
@@ -217,41 +241,124 @@ function cleanLog(data){
 
 
 
+
+
         /*
-        텍스트 교정
+        =====================
+        원본 보호
+
+        =====================
         */
 
 
-        if(item.text){
-
-            item.text =
-            cleanText(item.text);
-
-        }
+        const newItem =
+        {
+            ...item
+        };
 
 
-
-        if(item.action){
-
-            item.action =
-            cleanText(item.action);
-
-        }
 
 
 
 
 
         /*
-        완전 동일 문장 반복 제거
+        =====================
+        텍스트 정리
 
-        로그 두배 오류 방지
+        =====================
+        */
 
+
+        if(newItem.text){
+
+
+            newItem.text =
+            cleanText(
+                newItem.text
+            );
+
+
+        }
+
+
+
+
+
+        if(newItem.action){
+
+
+            newItem.action =
+            cleanText(
+                newItem.action
+            );
+
+
+        }
+
+
+
+
+
+
+
+        /*
+        =====================
+        HTML 내부 텍스트 정리
+
+        =====================
+        */
+
+
+        if(newItem.html){
+
+
+            newItem.html =
+            cleanText(
+                newItem.html
+            );
+
+
+        }
+
+
+
+
+
+
+
+
+        /*
+        =====================
+        로그 두배 오류 제거
+
+        같은 캐릭터의 같은 대사 제거
+
+        =====================
         */
 
 
         const key =
-        JSON.stringify(item);
+
+        (
+            newItem.speaker
+            ||
+            ""
+        )
+
+        +
+
+        "|"
+
+        +
+
+        (
+            newItem.text
+            ||
+            ""
+        );
+
+
 
 
 
@@ -264,11 +371,21 @@ function cleanLog(data){
         }
 
 
+
+
+
         duplicateCheck.add(key);
 
 
 
-        cleaned.push(item);
+
+
+
+        cleaned.push(
+            newItem
+        );
+
+
 
 
 
@@ -276,7 +393,11 @@ function cleanLog(data){
 
 
 
+
+
+
     return cleaned;
+
 
 
 }
