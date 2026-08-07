@@ -1,11 +1,9 @@
 /*
-================================
-
 Roll20 Archive Renderer
 
 동적 캐릭터 지원
 
-================================
+=================================
 */
 
 
@@ -17,12 +15,13 @@ return;
 
 
 
+
 if(
 !data ||
 data.length===0
 ){
 
-preview.innerHTML=
+preview.innerHTML =
 `
 <div class="empty">
 로그를 입력해주세요.
@@ -41,8 +40,8 @@ let html="";
 
 data.forEach(item=>{
 
-
-html += renderMessage(item);
+html +=
+renderMessage(item);
 
 
 });
@@ -59,12 +58,14 @@ html;
 
 
 
-/*
-================================
 
+
+
+
+/*
 메시지 하나 출력
 
-================================
+=================================
 */
 
 
@@ -72,29 +73,16 @@ function renderMessage(item){
 
 
 
-    /*
-    일반 시스템 메시지
-
-    예:
-    주사위 결과
-    장소 설명
-    핸드아웃
-
-    */
+if(
+item.type==="system"
+||
+!item.speaker
+){
 
 
-    if(
-        item.type==="system"
-        ||
-        !item.speaker
-    ){
-
-
-        return `
-
+return `
 
 <div class="system-message">
-
 
 ${
 
@@ -110,83 +98,73 @@ formatRoll20HTML(item.text)
 
 }
 
-
-
 </div>
-
 
 `;
 
 
-
-    }
-
-
-
-
-
-    const character =
-    getCharacter(
-        item.speaker
-    );
+}
 
 
 
 
 
-    return `
+const character =
+getCharacter(
+item.speaker
+);
 
 
-<article
+
+
+const safeName =
+escapeRendererHTML(
+item.speaker
+);
+
+
+
+
+const image =
+
+character.image &&
+character.image.startsWith("http")
+
+?
+
+character.image
+
+:
+
+"images/default-avatar.png";
+
+
+
+
+
+
+return `
+
+
+<div
 
 class="message-card"
 
-data-character="${item.speaker}"
+data-character="${safeName}"
 
 >
-
-
-
-
-
-<div class="character-header">
-
-
 
 
 
 <img
 
-
 class="character-image"
 
+src="${image}"
 
-src="
-
-${
-
-character.image ||
-
-"images/default-avatar.png"
-
-}
-
-"
-
-
-onerror="
-
-this.src='images/default-avatar.png'
-
-"
-
+onerror="this.src='images/default-avatar.png'"
 
 >
-
-
-
-
-<div class="character-meta">
 
 
 
@@ -194,30 +172,17 @@ this.src='images/default-avatar.png'
 
 class="character-name"
 
-style="
-
-color:${character.color}
-
-"
+style="color:${character.color}"
 
 >
 
-${item.speaker}
+${safeName}
 
-</div>
-
-
-
-<div class="character-role">
+<span class="character-role">
 
 ${character.role}
 
-</div>
-
-
-
-</div>
-
+</span>
 
 </div>
 
@@ -225,10 +190,7 @@ ${character.role}
 
 
 
-
-
-<div class="message-body">
-
+<div class="message-text">
 
 ${
 
@@ -240,19 +202,15 @@ item.html
 
 :
 
-formatRoll20HTML(
-item.text
-)
+formatRoll20HTML(item.text)
 
 }
-
 
 </div>
 
 
 
-
-</article>
+</div>
 
 
 `;
@@ -270,37 +228,27 @@ item.text
 
 
 /*
-================================
+텍스트 출력
 
-Roll20 꾸밈 보존 처리
-
-================================
-
+=================================
 */
 
 
 function formatRoll20HTML(text){
 
 
-    if(!text)
-        return "";
+if(!text)
+return "";
 
 
 
-    return text
+return escapeRendererHTML(text)
 
-    // 줄바꿈 유지
+.replace(
+/\n/g,
+"<br>"
+);
 
-    .replace(
-        /\n/g,
-        "<br>"
-    )
-
-
-
-    // 점삼육 교정 전 임시 보존
-
-    ;
 
 
 }
@@ -314,50 +262,45 @@ function formatRoll20HTML(text){
 
 
 /*
-================================
-
 검색
 
-================================
-
+=================================
 */
 
 
 function searchMessages(keyword){
 
 
-    const cards =
-    document.querySelectorAll(
-        ".message-card"
-    );
+
+const cards =
+document.querySelectorAll(
+".message-card"
+);
 
 
 
-    cards.forEach(card=>{
+cards.forEach(card=>{
 
 
-        if(
-            card.innerText
-            .includes(keyword)
-        ){
+if(
+card.innerText.includes(keyword)
+){
 
-            card.style.display=
-            "";
+card.style.display="";
 
 
-        }
+}
 
-        else{
-
-
-            card.style.display=
-            "none";
+else{
 
 
-        }
+card.style.display="none";
 
 
-    });
+}
+
+
+});
 
 
 }
@@ -371,51 +314,90 @@ function searchMessages(keyword){
 
 
 /*
-================================
+캐릭터 필터
 
-캐릭터별 필터
-
-================================
-
+=================================
 */
 
 
 function filterCharacter(name){
 
 
-
-    const cards =
-    document.querySelectorAll(
-        ".message-card"
-    );
-
+const cards =
+document.querySelectorAll(
+".message-card"
+);
 
 
-    cards.forEach(card=>{
+
+cards.forEach(card=>{
 
 
-        if(
-            card.dataset.character
-            ===
-            name
-        ){
+if(
+card.dataset.character === name
+){
+
+card.style.display="";
 
 
-            card.style.display="";
+}
+
+else{
+
+card.style.display="none";
+
+}
 
 
-        }
-
-        else{
+});
 
 
-            card.style.display="none";
+}
 
 
-        }
 
 
-    });
+
+
+
+
+
+/*
+HTML 보호
+
+=================================
+*/
+
+
+function escapeRendererHTML(text){
+
+
+return String(text)
+
+.replace(
+/&/g,
+"&amp;"
+)
+
+.replace(
+/</g,
+"&lt;"
+)
+
+.replace(
+/>/g,
+"&gt;"
+)
+
+.replace(
+/"/g,
+"&quot;"
+)
+
+.replace(
+/'/g,
+"&#039;"
+);
 
 
 }
