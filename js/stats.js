@@ -67,14 +67,14 @@ function analyzeStats(data){
         */
 
 
-        if(item.text){
+       const source =
+item.text ||
+item.html ||
+"";
 
 
-            result.totalLetters +=
-            countLetters(item.text);
-
-
-        }
+result.totalLetters +=
+countLetters(source);
 
 
 
@@ -121,32 +121,58 @@ function analyzeStats(data){
 
 
 
-            if(
-                !result.characters[name]
-            ){
+           if(
+!result.characters[name]
+){
 
 
-                result.characters[name]={
-
-                    name,
-
-                    count:0,
-
-                    letters:0,
-
-                    average:0
+const info =
+getCharacter(name);
 
 
-                };
 
-            }
+result.characters[name]={
+
+
+name,
+
+
+image:
+info.image,
+
+
+role:
+info.role,
+
+
+color:
+info.color,
+
+
+count:0,
+
+
+letters:0,
+
+
+average:0
+
+
+};
+
+
+}
 
 
 
 
 
             const length =
-            countLetters(item.text);
+countLetters(
+item.text ||
+item.html ||
+""
+);
 
 
 
@@ -356,7 +382,7 @@ function renderStatsHTML(stats){
         <div>
 
         <b>
-        ${char.name}
+${escapeHTML(char.name)}
         </b>
 
         <br>
@@ -387,6 +413,40 @@ function renderStatsHTML(stats){
 
 
     return html;
+
+
+}
+
+
+function escapeStatsHTML(text){
+
+
+return String(text)
+
+.replace(
+/&/g,
+"&amp;"
+)
+
+.replace(
+/</g,
+"&lt;"
+)
+
+.replace(
+/>/g,
+"&gt;"
+)
+
+.replace(
+/"/g,
+"&quot;"
+)
+
+.replace(
+/'/g,
+"&#039;"
+);
 
 
 }
