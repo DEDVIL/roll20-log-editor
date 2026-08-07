@@ -5,9 +5,7 @@
 
 <meta charset="UTF-8">
 
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>
 TRPG Log Studio
@@ -16,21 +14,23 @@ TRPG Log Studio
 
 <link rel="stylesheet" href="style.css">
 
-
 </head>
 
 
 <body>
 
 
+<div class="app">
+
+
 <header class="header">
 
 <h1>
-🎲 TRPG Log Studio
+TRPG Log Studio
 </h1>
 
 <p>
-Roll20 로그 정리 및 백업 도구
+Roll20 로그 정리 · 롤꾸 보존 · 티스토리 변환
 </p>
 
 </header>
@@ -38,43 +38,34 @@ Roll20 로그 정리 및 백업 도구
 
 
 
-<main class="layout">
+
+<div class="layout">
 
 
-<!-- =========================
-입력 영역
-========================= -->
 
 
-<section class="panel input-panel">
+
+<!-- =================
+사이드 패널
+================= -->
+
+
+<aside class="sidebar">
+
+
+
+<section class="panel">
 
 
 <h2>
-📥 로그 입력
+파일
 </h2>
 
 
-
-<textarea
-
-id="logInput"
-
-placeholder="
-Roll20 채팅 로그를 붙여넣으세요.
-HTML 복사도 가능합니다.
-"
-
-></textarea>
-
-
-
-
-<div class="file-area">
-
-
-<label>
+<label class="upload-btn">
 
 파일 불러오기
+
 
 <input
 
@@ -88,16 +79,25 @@ hidden
 
 >
 
+
 </label>
 
 
-</div>
+</section>
 
 
 
 
 
-<div class="button-group">
+<section class="panel">
+
+
+<h2>
+변환
+</h2>
+
+
+<div class="button-grid">
 
 
 <button id="parseBtn">
@@ -107,13 +107,11 @@ hidden
 </button>
 
 
-
 <button id="cleanBtn">
 
 자동 정리
 
 </button>
-
 
 
 <button id="copyBtn">
@@ -144,7 +142,6 @@ PDF 출력
 </button>
 
 
-
 </div>
 
 
@@ -156,22 +153,19 @@ PDF 출력
 
 
 
-<!-- =========================
-검색
-========================= -->
-
-
 <section class="panel">
 
 
 <h2>
-🔎 검색
+검색
 </h2>
 
 
 <input
 
 id="searchInput"
+
+class="search"
 
 placeholder="로그 검색"
 
@@ -186,20 +180,16 @@ placeholder="로그 검색"
 
 
 
-<!-- =========================
-캐릭터 관리
-========================= -->
-
-
 <section class="panel">
 
 
 <h2>
-🎭 캐릭터 관리
+캐릭터
 </h2>
 
 
-<p>
+
+<p class="help">
 
 로그를 입력하면 캐릭터가 자동 생성됩니다.
 
@@ -219,10 +209,11 @@ class="character-list"
 
 
 
-
 <button
 
 id="deleteBtn"
+
+class="danger"
 
 >
 
@@ -241,21 +232,16 @@ id="deleteBtn"
 
 
 
-<!-- =========================
-테마 설정
-========================= -->
-
-
 <section class="panel">
 
 
 <h2>
-🎨 컬러 설정
+테마
 </h2>
 
 
 
-<div class="color-setting">
+<div class="color-row">
 
 
 <label>
@@ -318,7 +304,6 @@ value="#f5f5f5"
 
 
 
-
 <button
 
 id="applyTheme"
@@ -330,71 +315,21 @@ id="applyTheme"
 </button>
 
 
-
 </section>
 
 
 
-
-
-
-
-
-<!-- =========================
-로그 출력
-========================= -->
 
 
 <section class="panel">
 
 
 <h2>
-📜 로그 미리보기
-</h2>
-
-
-
-<div
-
-id="preview"
-
-class="log-container"
-
->
-
-로그를 입력해주세요.
-
-</div>
-
-
-
-</section>
-
-
-
-
-
-
-
-
-<!-- =========================
 통계
-========================= -->
-
-
-<section class="panel">
-
-
-<h2>
-📊 통계
 </h2>
 
 
-<div
-
-id="statistics"
-
->
+<div id="statistics">
 
 아직 없음
 
@@ -405,10 +340,53 @@ id="statistics"
 
 
 
+
+
+</aside>
+
+
+
+
+
+
+
+<!-- =================
+메인 로그
+================= -->
+
+
+<main class="content">
+
+
+<div
+
+id="preview"
+
+class="log-container"
+
+>
+
+
+<div class="empty">
+
+로그를 입력해주세요.
+
+</div>
+
+
+</div>
+
+
 </main>
 
 
 
+
+
+</div>
+
+
+</div>
 
 
 
@@ -428,10 +406,7 @@ id="statistics"
 
 <script src="js/exporter.js"></script>
 
-<script src="js/theme.js"></script>
-
 <script src="app.js"></script>
-
 
 
 </body>
