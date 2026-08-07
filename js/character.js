@@ -3,15 +3,7 @@ TRPG Log Studio
 
 Character Manager
 
-동적 캐릭터 관리 시스템
-
-기능:
-
-- 로그 기반 자동 생성
-- 캐릭터 이미지 관리
-- PC/KPC/NPC 구분
-- 캐릭터별 색상 관리
-- 렌더링 데이터 제공
+Dynamic Character System
 
 =================================
 */
@@ -21,12 +13,10 @@ let characters = {};
 
 
 
+
+
 /*
-=================================
-
-추출 캐릭터 등록
-
-characterExtractor.js 연결
+캐릭터 등록
 
 =================================
 */
@@ -49,7 +39,6 @@ function registerExtractedCharacters(data){
 
 
 
-
     data.forEach(char=>{
 
 
@@ -66,13 +55,12 @@ function registerExtractedCharacters(data){
 
 
 
-
         if(!characters[name]){
 
 
             characters[name]={
 
-                name:name,
+                name,
 
                 image:
                 char.image || "",
@@ -87,7 +75,6 @@ function registerExtractedCharacters(data){
 
 
         }
-
         else{
 
 
@@ -98,7 +85,6 @@ function registerExtractedCharacters(data){
 
             }
 
-
         }
 
 
@@ -108,16 +94,16 @@ function registerExtractedCharacters(data){
 
     renderCharacterUI();
 
-
 }
 
 
 
 
-/*
-=================================
 
-로그 기반 캐릭터 등록
+
+
+/*
+로그 기반 등록
 
 =================================
 */
@@ -146,13 +132,12 @@ function registerCharacters(data){
 
 
 
-
             if(!characters[name]){
 
 
                 characters[name]={
 
-                    name:name,
+                    name,
 
                     image:"",
 
@@ -160,7 +145,6 @@ function registerCharacters(data){
 
                     color:
                     createColor()
-
 
                 };
 
@@ -183,9 +167,9 @@ function registerCharacters(data){
 
 
 
-/*
-=================================
 
+
+/*
 초기화
 
 =================================
@@ -207,10 +191,9 @@ function resetCharacters(){
 
 
 
-/*
-=================================
 
-캐릭터 UI
+/*
+UI 출력
 
 =================================
 */
@@ -225,10 +208,8 @@ function renderCharacterUI(){
     );
 
 
-
     if(!box)
         return;
-
 
 
 
@@ -238,7 +219,6 @@ function renderCharacterUI(){
 
 
     Object.values(characters)
-
     .forEach(character=>{
 
 
@@ -271,136 +251,162 @@ function renderCharacterUI(){
 
 
 
+
         card.innerHTML = `
 
 
-        <img
-
-        src="${image}"
-
-        class="character-preview"
-
-        onerror="
-        this.src='images/default-avatar.png'
-        "
-
-        >
+        <div class="character-top">
 
 
+            <img
 
-        <div class="character-info">
+            src="${image}"
+
+            class="character-preview"
+
+            onerror="
+            this.src='images/default-avatar.png'
+            "
+
+            >
 
 
-        <div class="character-name">
 
-        ${escapeHTML(character.name)}
+            <div>
+
+
+                <div class="character-name">
+
+                ${escapeHTML(character.name)}
+
+                </div>
+
+
+
+                <span
+                class="character-role"
+                style="
+                color:${character.color}
+                "
+                >
+
+                ${character.role}
+
+                </span>
+
+
+            </div>
+
+
+
+            <input
+
+            type="checkbox"
+
+            class="character-check"
+
+            value="${escapeAttribute(character.name)}"
+
+            >
+
+
 
         </div>
 
 
 
-        <label>
 
-        선택
 
-        <input
-
-        type="checkbox"
-
-        class="character-check"
-
-        value="${escapeAttribute(character.name)}"
-
-        >
-
-        </label>
+        <div class="character-settings">
 
 
 
+            <label>
 
-        <label>
+            이미지
 
-        이미지 URL
+            <input
 
-        <input
+            type="text"
 
-        type="text"
+            class="character-image-input"
 
-        class="character-image-input"
+            value="${escapeAttribute(character.image)}"
 
-        value="${escapeAttribute(character.image)}"
+            placeholder="이미지 URL"
 
-        placeholder="Roll20 이미지 링크"
+            >
 
-        >
-
-        </label>
+            </label>
 
 
 
 
 
-        <label>
+            <label>
 
-        역할
-
-
-        <select class="character-role">
+            역할
 
 
-        <option value="PC"
-        ${character.role==="PC" ? "selected":""}
-        >
-
-        PC
-
-        </option>
+            <select
+            class="character-role-select"
+            >
 
 
-        <option value="KPC"
-        ${character.role==="KPC" ? "selected":""}
-        >
+            <option value="PC"
+            ${character.role==="PC"?"selected":""}
+            >
 
-        KPC
+            PC
 
-        </option>
-
-
-        <option value="NPC"
-        ${character.role==="NPC" ? "selected":""}
-        >
-
-        NPC
-
-        </option>
-
-
-        </select>
-
-
-        </label>
+            </option>
 
 
 
+            <option value="KPC"
+            ${character.role==="KPC"?"selected":""}
+            >
+
+            KPC
+
+            </option>
 
 
-        <label>
 
-        색상
+            <option value="NPC"
+            ${character.role==="NPC"?"selected":""}
+            >
 
+            NPC
 
-        <input
-
-        type="color"
-
-        class="character-color"
-
-        value="${character.color}"
-
-        >
+            </option>
 
 
-        </label>
+            </select>
+
+
+            </label>
+
+
+
+
+
+            <label>
+
+            색상
+
+
+            <input
+
+            type="color"
+
+            class="character-color"
+
+            value="${character.color}"
+
+            >
+
+            </label>
 
 
 
@@ -408,6 +414,7 @@ function renderCharacterUI(){
 
 
         `;
+
 
 
 
@@ -422,10 +429,15 @@ function renderCharacterUI(){
             "change",
             ()=>{
 
+
                 changeCharacterImage(
+
                     character.name,
+
                     imageInput.value
+
                 );
+
 
             }
         );
@@ -433,9 +445,11 @@ function renderCharacterUI(){
 
 
 
+
+
         const roleInput =
         card.querySelector(
-            ".character-role"
+            ".character-role-select"
         );
 
 
@@ -443,13 +457,19 @@ function renderCharacterUI(){
             "change",
             ()=>{
 
+
                 changeCharacterRole(
+
                     character.name,
+
                     roleInput.value
+
                 );
+
 
             }
         );
+
 
 
 
@@ -465,10 +485,15 @@ function renderCharacterUI(){
             "change",
             ()=>{
 
+
                 changeCharacterColor(
+
                     character.name,
+
                     colorInput.value
+
                 );
+
 
             }
         );
@@ -476,7 +501,9 @@ function renderCharacterUI(){
 
 
 
+
         box.appendChild(card);
+
 
 
     });
@@ -491,8 +518,6 @@ function renderCharacterUI(){
 
 
 /*
-=================================
-
 이미지 변경
 
 =================================
@@ -500,8 +525,8 @@ function renderCharacterUI(){
 
 
 function changeCharacterImage(
-    name,
-    url
+name,
+url
 ){
 
 
@@ -515,9 +540,6 @@ function changeCharacterImage(
 
 
 
-    renderCharacterUI();
-
-
 }
 
 
@@ -526,8 +548,6 @@ function changeCharacterImage(
 
 
 /*
-=================================
-
 역할 변경
 
 =================================
@@ -535,8 +555,8 @@ function changeCharacterImage(
 
 
 function changeCharacterRole(
-    name,
-    role
+name,
+role
 ){
 
 
@@ -555,9 +575,9 @@ function changeCharacterRole(
 
 
 
-/*
-=================================
 
+
+/*
 색상 변경
 
 =================================
@@ -565,8 +585,8 @@ function changeCharacterRole(
 
 
 function changeCharacterColor(
-    name,
-    color
+name,
+color
 ){
 
 
@@ -585,9 +605,9 @@ function changeCharacterColor(
 
 
 
-/*
-=================================
 
+
+/*
 삭제
 
 =================================
@@ -604,9 +624,7 @@ function removeCharacters(names){
 
     names.forEach(name=>{
 
-
         delete characters[name];
-
 
     });
 
@@ -622,9 +640,8 @@ function removeCharacters(names){
 
 
 
-/*
-=================================
 
+/*
 캐릭터 반환
 
 =================================
@@ -642,7 +659,7 @@ function getCharacter(name){
 
         {
 
-            name:name,
+            name,
 
             image:"",
 
@@ -661,20 +678,11 @@ function getCharacter(name){
 
 
 
-/*
-=================================
-
-전체 반환
-
-=================================
-*/
 
 
 function getCharacters(){
 
-
     return characters;
-
 
 }
 
@@ -683,10 +691,9 @@ function getCharacters(){
 
 
 
-/*
-=================================
 
-자동 색상
+/*
+색상 생성
 
 =================================
 */
@@ -698,15 +705,10 @@ function createColor(){
     const colors=[
 
         "#6C7AE0",
-
         "#E57373",
-
         "#81C784",
-
         "#FFB74D",
-
         "#BA68C8",
-
         "#4DB6AC"
 
     ];
@@ -721,6 +723,7 @@ function createColor(){
 
     ];
 
+
 }
 
 
@@ -730,9 +733,7 @@ function createColor(){
 
 
 /*
-=================================
-
-이미지 URL 검사
+이미지 검사
 
 =================================
 */
@@ -758,9 +759,7 @@ function isValidImageURL(url){
 
 
 /*
-=================================
-
-HTML Escape
+Escape
 
 =================================
 */
@@ -769,88 +768,43 @@ HTML Escape
 function escapeHTML(text){
 
 
-    return String(text || "")
+return String(text || "")
 
-    .replace(
-        /&/g,
-        "&amp;"
-    )
+.replace(/&/g,"&amp;")
 
-    .replace(
-        /</g,
-        "&lt;"
-    )
+.replace(/</g,"&lt;")
 
-    .replace(
-        />/g,
-        "&gt;"
-    )
+.replace(/>/g,"&gt;")
 
-    .replace(
-        /"/g,
-        "&quot;"
-    )
+.replace(/"/g,"&quot;")
 
-    .replace(
-        /'/g,
-        "&#039;"
-    );
+.replace(/'/g,"&#039;");
 
 
 }
 
 
 
-
-
-
-/*
-=================================
-
-Attribute Escape
-
-=================================
-*/
 
 
 function escapeAttribute(text){
 
-
-    return escapeHTML(
-        text || ""
-    );
-
+    return escapeHTML(text || "");
 
 }
 
 
 
-
-
-
-/*
-=================================
-
-JS Escape
-
-=================================
-*/
 
 
 function escapeQuote(text){
 
 
-    return String(text || "")
+return String(text || "")
 
-    .replace(
-        /\\/g,
-        "\\\\"
-    )
+.replace(/\\/g,"\\\\")
 
-    .replace(
-        /'/g,
-        "\\'"
-    );
+.replace(/'/g,"\\'");
 
 
 }
