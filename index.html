@@ -5,18 +5,14 @@
 
 <meta charset="UTF-8">
 
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>
 TRPG Log Studio
 </title>
 
 
-<link rel="stylesheet"
-href="style.css">
-
+<link rel="stylesheet" href="style.css">
 
 </head>
 
@@ -26,19 +22,15 @@ href="style.css">
 
 <header class="header">
 
-
 <h1>
 TRPG Log Studio
 </h1>
 
-
-<p>
-Roll20 로그 보존 및 정리 도구
+<p class="help">
+Roll20 로그를 붙여넣거나 파일로 불러와 정리합니다.
 </p>
 
-
 </header>
-
 
 
 
@@ -47,10 +39,9 @@ Roll20 로그 보존 및 정리 도구
 
 
 
-<!-- =========================
-     사이드바
-========================= -->
-
+<!-- =====================
+사이드바
+===================== -->
 
 <aside class="sidebar">
 
@@ -58,10 +49,27 @@ Roll20 로그 보존 및 정리 도구
 
 <section class="panel">
 
-
 <h2>
-파일
+로그 입력
 </h2>
+
+
+<textarea
+
+id="logInput"
+
+class="log-input"
+
+placeholder="
+Roll20 채팅 HTML 또는 텍스트 로그를 붙여넣으세요.
+
+예:
+캐릭터명: 대사
+
+HTML 복사도 지원됩니다.
+"
+
+></textarea>
 
 
 
@@ -79,19 +87,22 @@ hidden
 
 
 <button
-onclick="
-document.querySelector('#fileInput').click()
-"
+id="parseBtn"
 >
+변환
+</button>
 
-파일 불러오기
 
+
+<button
+id="cleanBtn"
+>
+자동 정리
 </button>
 
 
 
 </section>
-
 
 
 
@@ -102,55 +113,35 @@ document.querySelector('#fileInput').click()
 
 
 <h2>
-변환
+내보내기
 </h2>
 
 
-
-<button id="parseBtn">
-
-변환
-
-</button>
-
-
-
-<button id="cleanBtn">
-
-자동 정리
-
-</button>
-
-
-
-<button id="copyBtn">
-
+<button
+id="copyBtn"
+>
 티스토리 HTML 복사
-
 </button>
 
 
-
-<button id="backupBtn">
-
+<button
+id="backupBtn"
+>
 JSON 백업
-
 </button>
 
 
-
-<button id="txtBtn">
-
+<button
+id="txtBtn"
+>
 TXT 저장
-
 </button>
 
 
-
-<button id="pdfBtn">
-
+<button
+id="pdfBtn"
+>
 PDF 출력
-
 </button>
 
 
@@ -162,189 +153,12 @@ PDF 출력
 
 
 
-
 <section class="panel">
 
 
 <h2>
-캐릭터
+검색
 </h2>
-
-
-
-<p class="help">
-
-로그를 입력하면 캐릭터가 자동 생성됩니다.
-
-</p>
-
-
-
-<div
-
-id="characters"
-
-class="character-list"
-
->
-
-</div>
-
-
-
-<button
-
-id="deleteBtn"
-
-class="danger"
-
->
-
-선택 캐릭터 삭제
-
-</button>
-
-
-
-</section>
-
-
-
-
-
-
-
-<section class="panel">
-
-
-<h2>
-테마 설정
-</h2>
-
-
-
-<label>
-
-배경색
-
-<input
-
-type="color"
-
-id="bgColor"
-
-value="#ffffff"
-
->
-
-</label>
-
-
-
-
-<label>
-
-글자색
-
-<input
-
-type="color"
-
-id="textColor"
-
-value="#222222"
-
->
-
-</label>
-
-
-
-
-<label>
-
-채팅 박스
-
-<input
-
-type="color"
-
-id="chatColor"
-
-value="#f5f5f5"
-
->
-
-</label>
-
-
-
-
-<button
-
-id="applyTheme"
-
->
-
-테마 적용
-
-</button>
-
-
-
-</section>
-
-
-
-
-
-
-
-<section class="panel">
-
-
-<h2>
-통계
-</h2>
-
-
-
-<div
-
-id="statistics"
-
->
-
-아직 없음
-
-</div>
-
-
-
-</section>
-
-
-
-</aside>
-
-
-
-
-
-
-
-
-
-<!-- =========================
-     메인
-========================= -->
-
-
-<main class="main">
-
-
-
-<section class="panel">
 
 
 <input
@@ -366,17 +180,153 @@ placeholder="로그 검색"
 
 
 
+<section class="panel">
 
-<section
+
+<h2>
+캐릭터
+</h2>
+
+
+<p class="help">
+로그 분석 후 캐릭터가 자동 생성됩니다.
+</p>
+
+
+
+<div
+
+id="characters"
+
+class="character-list"
+
+></div>
+
+
+
+<button
+
+id="deleteBtn"
+
+class="danger"
+
+>
+선택 캐릭터 삭제
+</button>
+
+
+</section>
+
+
+
+
+
+
+
+
+<section class="panel">
+
+
+<h2>
+테마
+</h2>
+
+
+<label>
+배경색
+<input
+
+type="color"
+
+id="bgColor"
+
+value="#ffffff"
+
+>
+</label>
+
+
+<br>
+
+
+<label>
+글자색
+<input
+
+type="color"
+
+id="textColor"
+
+value="#222222"
+
+>
+</label>
+
+
+<br>
+
+
+<label>
+채팅 박스
+<input
+
+type="color"
+
+id="chatColor"
+
+value="#f5f5f5"
+
+>
+</label>
+
+
+
+<button
+
+id="applyTheme"
+
+>
+테마 적용
+</button>
+
+
+
+</section>
+
+
+
+
+</aside>
+
+
+
+
+
+
+
+<!-- =====================
+메인
+===================== -->
+
+<main class="main">
+
+
+
+<section class="panel">
+
+
+<h2>
+로그 미리보기
+</h2>
+
+
+<div
 
 id="preview"
 
 class="log-container"
 
 >
-
-
-<div class="empty">
 
 로그를 입력해주세요.
 
@@ -389,14 +339,36 @@ class="log-container"
 
 
 
+
+
+<section class="panel">
+
+
+<h2>
+통계
+</h2>
+
+
+<div
+
+id="statistics"
+
+>
+
+아직 없음
+
+</div>
+
+
+</section>
+
+
+
 </main>
 
 
 
 </div>
-
-
-
 
 
 
