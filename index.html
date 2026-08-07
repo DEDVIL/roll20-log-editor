@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Roll20 Log Editor</title>
+
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+  <h1>Roll20 Log Editor</h1>
+</header>
+
+<main>
+
+<section class="input-panel">
+
+<textarea id="rawLog"
+placeholder="Roll20 로그를 붙여넣으세요"></textarea>
+
+<div class="buttons">
+  <button id="parseBtn">파싱</button>
+  <button id="cleanBtn">문장 교정</button>
+  <button id="htmlBtn">HTML 생성</button>
+</div>
+
+</section>
+
+<aside class="sidebar">
+
+<h3>등장인물</h3>
+<div id="characterList"></div>
+
+<h3>통계</h3>
+<div id="stats"></div>
+
+<input
+type="text"
+id="searchInput"
+placeholder="검색">
+
+</aside>
+
+<section class="preview">
+
+<h2>미리보기</h2>
+
+<div id="preview"></div>
+
+</section>
+
+</main>
+
+<script src="app.js"></script>
+
+</body>
+</html>
