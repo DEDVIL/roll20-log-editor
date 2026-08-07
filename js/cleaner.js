@@ -26,10 +26,10 @@ function cleanText(text) {
 
 
     result =
-    result.replace(
-        /This message has been hidden\./gi,
-        ""
-    );
+result.replace(
+/This message (has been hidden|is hidden)\.?/gi,
+""
+);
 
 
 
