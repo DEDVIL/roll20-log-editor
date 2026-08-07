@@ -21,16 +21,12 @@ let characters = {};
 
 
 
-
-
-
-
 /*
 =================================
 
-추출된 캐릭터 등록
+추출 캐릭터 등록
 
-characterExtractor.js 연결용
+characterExtractor.js 연결
 
 =================================
 */
@@ -39,127 +35,81 @@ characterExtractor.js 연결용
 function registerExtractedCharacters(data){
 
 
-
-if(!data)
-return;
-
+    if(!data)
+        return;
 
 
 
+    if(!Array.isArray(data)){
 
-/*
-객체 반환 대응
+        data =
+        Object.values(data);
 
-{
- 이름:{
-  name,
-  image
- }
-}
-
-*/
-
-
-if(!Array.isArray(data)){
-
-
-data =
-Object.values(data);
-
-
-}
+    }
 
 
 
 
+    data.forEach(char=>{
 
 
-data.forEach(char=>{
-
-
-if(
-!char ||
-!char.name
-)
-return;
-
+        if(
+            !char ||
+            !char.name
+        )
+            return;
 
 
 
-
-const name =
-char.name.trim();
+        const name =
+        char.name.trim();
 
 
 
 
+        if(!characters[name]){
 
 
-if(
-!characters[name]
-){
+            characters[name]={
+
+                name:name,
+
+                image:
+                char.image || "",
+
+                role:
+                "NPC",
+
+                color:
+                createColor()
+
+            };
+
+
+        }
+
+        else{
+
+
+            if(char.image){
+
+                characters[name].image =
+                char.image;
+
+            }
+
+
+        }
+
+
+    });
 
 
 
-characters[name]={
-
-
-name:name,
-
-
-image:
-char.image || "",
-
-
-role:
-"NPC",
-
-
-color:
-createColor()
-
-
-
-};
-
+    renderCharacterUI();
 
 
 }
-
-else{
-
-
-if(char.image){
-
-
-characters[name].image =
-char.image;
-
-
-}
-
-
-
-}
-
-
-
-});
-
-
-
-
-
-renderCharacterUI();
-
-
-
-}
-
-
-
-
-
 
 
 
@@ -167,9 +117,7 @@ renderCharacterUI();
 /*
 =================================
 
-메시지 기반 캐릭터 등록
-
-백업 데이터 호환
+로그 기반 캐릭터 등록
 
 =================================
 */
@@ -178,83 +126,59 @@ renderCharacterUI();
 function registerCharacters(data){
 
 
-
-if(!Array.isArray(data))
-return;
-
+    if(!Array.isArray(data))
+        return;
 
 
 
-
-data.forEach(item=>{
-
+    data.forEach(item=>{
 
 
-if(
-item.type==="dialog"
-&&
-item.speaker
-){
+        if(
+            item.type==="dialog"
+            &&
+            item.speaker
+        ){
 
 
-
-const name =
-item.speaker.trim();
+            const name =
+            item.speaker.trim();
 
 
 
 
-
-if(
-!characters[name]
-){
+            if(!characters[name]){
 
 
-characters[name]={
+                characters[name]={
+
+                    name:name,
+
+                    image:"",
+
+                    role:"NPC",
+
+                    color:
+                    createColor()
 
 
-name:name,
+                };
 
 
-image:"",
+            }
 
 
-role:"NPC",
+        }
 
 
-color:
-createColor()
-
-
-
-};
+    });
 
 
 
-}
-
+    renderCharacterUI();
 
 
 }
-
-
-
-});
-
-
-
-
-
-renderCharacterUI();
-
-
-
-}
-
-
-
-
-
 
 
 
@@ -262,7 +186,7 @@ renderCharacterUI();
 /*
 =================================
 
-새 로그 시작
+초기화
 
 =================================
 */
@@ -271,20 +195,13 @@ renderCharacterUI();
 function resetCharacters(){
 
 
-
-characters={};
-
+    characters={};
 
 
-renderCharacterUI();
-
+    renderCharacterUI();
 
 
 }
-
-
-
-
 
 
 
@@ -293,7 +210,7 @@ renderCharacterUI();
 /*
 =================================
 
-캐릭터 UI 출력
+캐릭터 UI
 
 =================================
 */
@@ -302,280 +219,270 @@ renderCharacterUI();
 function renderCharacterUI(){
 
 
+    const box =
+    document.querySelector(
+        "#characters"
+    );
 
-const box =
-document.querySelector(
-"#characters"
-);
 
 
+    if(!box)
+        return;
 
-if(!box)
-return;
 
 
 
+    box.innerHTML="";
 
 
-box.innerHTML="";
 
 
+    Object.values(characters)
 
+    .forEach(character=>{
 
 
-Object.values(characters)
+        const image =
 
-.forEach(character=>{
+        isValidImageURL(
+            character.image
+        )
 
+        ?
 
+        character.image
 
-const image =
+        :
 
-character.image &&
-character.image.startsWith("http")
+        "images/default-avatar.png";
 
-?
 
-character.image
 
-:
 
-"images/default-avatar.png";
 
+        const card =
+        document.createElement(
+            "div"
+        );
 
 
+        card.className =
+        "character-card";
 
 
-box.innerHTML += `
 
+        card.innerHTML = `
 
-<div class="character-card">
 
+        <img
 
+        src="${image}"
 
-<img
+        class="character-preview"
 
-src="${image}"
+        onerror="
+        this.src='images/default-avatar.png'
+        "
 
-class="character-preview"
+        >
 
-onerror="this.src='images/default-avatar.png'"
 
->
 
+        <div class="character-info">
 
 
-<div class="character-name">
+        <div class="character-name">
 
-${escapeHTML(character.name)}
+        ${escapeHTML(character.name)}
 
-</div>
+        </div>
 
 
 
+        <label>
 
-<label>
+        선택
 
-선택
+        <input
 
-<input
+        type="checkbox"
 
-type="checkbox"
+        class="character-check"
 
-class="character-check"
+        value="${escapeAttribute(character.name)}"
 
-value="${escapeAttribute(character.name)}"
+        >
 
->
+        </label>
 
-</label>
 
 
 
+        <label>
 
+        이미지 URL
 
-<label>
+        <input
 
-이미지 URL
+        type="text"
 
-<input
+        class="character-image-input"
 
-type="text"
+        value="${escapeAttribute(character.image)}"
 
-value="${escapeAttribute(character.image)}"
+        placeholder="Roll20 이미지 링크"
 
-placeholder="Roll20 이미지 링크"
+        >
 
-onchange="
+        </label>
 
-changeCharacterImage(
 
-'${escapeQuote(character.name)}',
 
-this.value
 
-)
 
-"
+        <label>
 
->
+        역할
 
-</label>
 
+        <select class="character-role">
 
 
+        <option value="PC"
+        ${character.role==="PC" ? "selected":""}
+        >
 
+        PC
 
-<label>
+        </option>
 
-역할
 
+        <option value="KPC"
+        ${character.role==="KPC" ? "selected":""}
+        >
 
-<select
+        KPC
 
-onchange="
+        </option>
 
-changeCharacterRole(
 
-'${escapeQuote(character.name)}',
+        <option value="NPC"
+        ${character.role==="NPC" ? "selected":""}
+        >
 
-this.value
+        NPC
 
-)
+        </option>
 
-"
 
->
+        </select>
 
 
-<option value="PC"
+        </label>
 
-${
 
-character.role==="PC"
 
-?
 
-"selected"
 
-:
+        <label>
 
-""
+        색상
 
-}
 
->
+        <input
 
-PC
+        type="color"
 
-</option>
+        class="character-color"
 
+        value="${character.color}"
 
+        >
 
-<option value="KPC"
 
-${
+        </label>
 
-character.role==="KPC"
 
-?
 
-"selected"
+        </div>
 
-:
 
-""
+        `;
 
-}
 
->
 
-KPC
 
-</option>
+        const imageInput =
+        card.querySelector(
+            ".character-image-input"
+        );
 
 
+        imageInput.addEventListener(
+            "change",
+            ()=>{
 
+                changeCharacterImage(
+                    character.name,
+                    imageInput.value
+                );
 
-<option value="NPC"
+            }
+        );
 
-${
 
-character.role==="NPC"
 
-?
 
-"selected"
+        const roleInput =
+        card.querySelector(
+            ".character-role"
+        );
 
-:
 
-""
+        roleInput.addEventListener(
+            "change",
+            ()=>{
 
-}
+                changeCharacterRole(
+                    character.name,
+                    roleInput.value
+                );
 
->
+            }
+        );
 
-NPC
 
-</option>
 
 
 
-</select>
+        const colorInput =
+        card.querySelector(
+            ".character-color"
+        );
 
-</label>
 
+        colorInput.addEventListener(
+            "change",
+            ()=>{
 
+                changeCharacterColor(
+                    character.name,
+                    colorInput.value
+                );
 
+            }
+        );
 
 
 
 
-<label>
+        box.appendChild(card);
 
-색상
 
-
-<input
-
-type="color"
-
-value="${character.color}"
-
-onchange="
-
-changeCharacterColor(
-
-'${escapeQuote(character.name)}',
-
-this.value
-
-)
-
-"
-
->
-
-
-</label>
-
-
-
-</div>
-
-
-
-`;
-
-
-
-});
-
+    });
 
 
 }
-
-
 
 
 
@@ -593,34 +500,25 @@ this.value
 
 
 function changeCharacterImage(
-name,
-url
+    name,
+    url
 ){
 
 
-
-if(!characters[name])
-return;
-
+    if(!characters[name])
+        return;
 
 
 
-
-characters[name].image =
-url.trim();
-
+    characters[name].image =
+    url.trim();
 
 
 
-
-renderCharacterUI();
-
+    renderCharacterUI();
 
 
 }
-
-
-
 
 
 
@@ -637,29 +535,21 @@ renderCharacterUI();
 
 
 function changeCharacterRole(
-name,
-role
+    name,
+    role
 ){
 
 
-
-if(!characters[name])
-return;
-
+    if(!characters[name])
+        return;
 
 
 
-
-characters[name].role =
-role;
-
+    characters[name].role =
+    role;
 
 
 }
-
-
-
-
 
 
 
@@ -675,22 +565,18 @@ role;
 
 
 function changeCharacterColor(
-name,
-color
+    name,
+    color
 ){
 
 
-
-if(!characters[name])
-return;
-
+    if(!characters[name])
+        return;
 
 
 
-
-characters[name].color =
-color;
-
+    characters[name].color =
+    color;
 
 
 }
@@ -699,16 +585,10 @@ color;
 
 
 
-
-
-
-
 /*
 =================================
 
-캐릭터 삭제
-
-app.js 연결용
+삭제
 
 =================================
 */
@@ -717,28 +597,22 @@ app.js 연결용
 function removeCharacters(names){
 
 
-
-if(!Array.isArray(names))
-return;
-
+    if(!Array.isArray(names))
+        return;
 
 
 
-
-names.forEach(name=>{
-
-
-delete characters[name];
+    names.forEach(name=>{
 
 
-});
+        delete characters[name];
 
+
+    });
 
 
 
-
-renderCharacterUI();
-
+    renderCharacterUI();
 
 
 }
@@ -748,15 +622,10 @@ renderCharacterUI();
 
 
 
-
-
-
 /*
 =================================
 
-특정 캐릭터 반환
-
-renderer.js / stats.js 사용
+캐릭터 반환
 
 =================================
 */
@@ -765,39 +634,28 @@ renderer.js / stats.js 사용
 function getCharacter(name){
 
 
+    return (
 
-return (
+        characters[name]
 
-characters[name]
+        ||
 
-||
+        {
 
-{
+            name:name,
 
+            image:"",
 
-name:name,
+            role:"NPC",
 
+            color:"#999999"
 
-image:"",
+        }
 
-
-role:"NPC",
-
-
-color:"#999999"
-
-
-}
-
-);
-
+    );
 
 
 }
-
-
-
-
 
 
 
@@ -806,7 +664,7 @@ color:"#999999"
 /*
 =================================
 
-전체 캐릭터 반환
+전체 반환
 
 =================================
 */
@@ -815,9 +673,7 @@ color:"#999999"
 function getCharacters(){
 
 
-
-return characters;
-
+    return characters;
 
 
 }
@@ -827,13 +683,10 @@ return characters;
 
 
 
-
-
-
 /*
 =================================
 
-색상 자동 생성
+자동 색상
 
 =================================
 */
@@ -842,44 +695,33 @@ return characters;
 function createColor(){
 
 
+    const colors=[
 
-const colors=[
+        "#6C7AE0",
 
+        "#E57373",
 
-"#6C7AE0",
+        "#81C784",
 
-"#E57373",
+        "#FFB74D",
 
-"#81C784",
+        "#BA68C8",
 
-"#FFB74D",
+        "#4DB6AC"
 
-"#BA68C8",
-
-"#4DB6AC"
-
-
-];
+    ];
 
 
 
+    return colors[
 
+        Object.keys(characters).length
+        %
+        colors.length
 
-return colors[
-
-Object.keys(characters).length
-
-%
-
-colors.length
-
-];
-
-
+    ];
 
 }
-
-
 
 
 
@@ -890,7 +732,35 @@ colors.length
 /*
 =================================
 
-HTML 보호
+이미지 URL 검사
+
+=================================
+*/
+
+
+function isValidImageURL(url){
+
+
+    if(!url)
+        return false;
+
+
+
+    return /^https?:\/\//i.test(url);
+
+
+}
+
+
+
+
+
+
+
+/*
+=================================
+
+HTML Escape
 
 =================================
 */
@@ -899,39 +769,32 @@ HTML 보호
 function escapeHTML(text){
 
 
+    return String(text || "")
 
-return String(text || "")
+    .replace(
+        /&/g,
+        "&amp;"
+    )
 
+    .replace(
+        /</g,
+        "&lt;"
+    )
 
-.replace(
-/&/g,
-"&amp;"
-)
+    .replace(
+        />/g,
+        "&gt;"
+    )
 
+    .replace(
+        /"/g,
+        "&quot;"
+    )
 
-.replace(
-/</g,
-"&lt;"
-)
-
-
-.replace(
-/>/g,
-"&gt;"
-)
-
-
-.replace(
-/"/g,
-"&quot;"
-)
-
-
-.replace(
-/'/g,
-"&#039;"
-);
-
+    .replace(
+        /'/g,
+        "&#039;"
+    );
 
 
 }
@@ -941,13 +804,10 @@ return String(text || "")
 
 
 
-
-
-
 /*
 =================================
 
-HTML 속성 보호
+Attribute Escape
 
 =================================
 */
@@ -956,10 +816,9 @@ HTML 속성 보호
 function escapeAttribute(text){
 
 
-return escapeHTML(
-text || ""
-);
-
+    return escapeHTML(
+        text || ""
+    );
 
 
 }
@@ -969,13 +828,10 @@ text || ""
 
 
 
-
-
-
 /*
 =================================
 
-JS 문자열 보호
+JS Escape
 
 =================================
 */
@@ -984,19 +840,17 @@ JS 문자열 보호
 function escapeQuote(text){
 
 
+    return String(text || "")
 
-return String(text || "")
+    .replace(
+        /\\/g,
+        "\\\\"
+    )
 
-.replace(
-/\\/g,
-"\\\\"
-)
-
-.replace(
-/'/g,
-"\\'"
-);
-
+    .replace(
+        /'/g,
+        "\\'"
+    );
 
 
 }
