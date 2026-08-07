@@ -118,17 +118,11 @@ countLetters(source);
             item.speaker;
 
 
+if(!item.speaker)
+return;
 
 
-
-           if(
-!result.characters[name]
-){
-
-
-const info =
-getCharacter(name);
-
+if(!result.characters[name]){
 
 
 const info =
@@ -137,32 +131,29 @@ getCharacter(name);
 
 result.characters[name]={
 
-    name,
+name,
 
-    image:
-    info.image,
+image:info.image,
 
-    role:
-    info.role,
+role:info.role,
 
-    color:
-    info.color,
+color:info.color,
 
-    count:0,
+count:0,
 
-    letters:0,
+letters:0,
 
-    average:0
+average:0
 
 };
 
 
+}
 
 
 
 
-
-            const length =
+const length =
 countLetters(
 item.text ||
 item.html ||
@@ -171,14 +162,9 @@ item.html ||
 
 
 
-            result.characters[name]
-            .count++;
+result.characters[name].count++;
 
-
-
-
-            result.characters[name]
-            .letters += length;
+result.characters[name].letters += length;
 
 
 
@@ -377,7 +363,7 @@ function renderStatsHTML(stats){
         <div>
 
         <b>
-${escapeHTML(char.name)}
+${escapeStatsHTML(char.name)}
         </b>
 
         <br>
