@@ -1,233 +1,615 @@
-let parsedData = [];
+/*
+ TRPG Log Studio
 
-const rawLog = document.getElementById("rawLog");
-const preview = document.getElementById("preview");
-const characterList = document.getElementById("characterList");
-const stats = document.getElementById("stats");
+ Main Controller
 
-document
-.getElementById("parseBtn")
-.addEventListener("click", parseLog);
+ 모든 기능 연결
+*/
 
-document
-.getElementById("cleanBtn")
-.addEventListener("click", cleanText);
 
-document
-.getElementById("htmlBtn")
-.addEventListener("click", exportHTML);
 
-document
-.getElementById("searchInput")
-.addEventListener("input", searchText);
+let currentData = [];
 
-function parseLog(){
+let currentStats = {};
 
-const text = rawLog.value;
 
-const lines = text.split("\n");
 
-parsedData = [];
 
-for(let line of lines){
 
-line = line.trim();
+/*
+========================
 
-if(!line) continue;
+DOM 준비
 
-if(
-line.includes("This message has been hidden")
-){
-continue;
-}
+========================
+*/
 
-const match =
-line.match(/^([^:]+):(.*)$/);
 
-if(match){
+document.addEventListener(
+"DOMContentLoaded",
+()=>{
 
-parsedData.push({
-type:"dialog",
-speaker:match[1].trim(),
-text:match[2].trim()
-});
 
-}else{
+    const input =
+    document.querySelector(
+    "#logInput"
+    );
 
-parsedData.push({
-type:"narration",
-text:line
-});
 
-}
-}
+    const preview =
+    document.querySelector(
+    "#preview"
+    );
 
-render();
-buildCharacters();
-buildStats();
-}
 
-function render(){
 
-preview.innerHTML = "";
+    const fileInput =
+    document.querySelector(
+    "#fileInput"
+    );
 
-parsedData.forEach(item=>{
 
-const div =
-document.createElement("div");
 
-div.classList.add("message");
 
-if(item.type==="dialog"){
 
-div.innerHTML = `
-<div class="speaker">
-${item.speaker}
-</div>
-<div>
-${item.text}
-</div>
-`;
+    /*
+    붙여넣기 자동 처리
 
-}else{
+    */
 
-div.innerHTML = `
-<div class="narration">
-${item.text}
-</div>
-`;
 
-}
+    input.addEventListener(
+    "paste",
+    ()=>{
 
-preview.appendChild(div);
 
-});
+        setTimeout(
+        parseCurrent,
+        100
+        );
 
-}
 
-function buildCharacters(){
+    });
 
-const chars = {};
 
-parsedData.forEach(item=>{
 
-if(item.speaker){
 
-chars[item.speaker] =
-(chars[item.speaker]||0)+1;
 
-}
+
+    /*
+    파일 업로드
+
+    */
+
+
+    if(fileInput){
+
+
+        fileInput.addEventListener(
+        "change",
+        loadFile
+        );
+
+
+    }
+
+
+
+
+
+    /*
+    버튼 연결
+
+    */
+
+
+    bindButtons();
+
 
 });
 
-characterList.innerHTML="";
 
-Object.keys(chars).forEach(name=>{
 
-const div =
-document.createElement("div");
 
-div.className="char-item";
 
-div.textContent=
-`${name} (${chars[name]})`;
 
-characterList.appendChild(div);
 
-});
+
+
+
+/*
+========================
+
+버튼 연결
+
+========================
+*/
+
+
+function bindButtons(){
+
+
+
+    const buttons = {
+
+
+        parseBtn:
+        parseCurrent,
+
+
+        cleanBtn:
+        cleanCurrent,
+
+
+        copyBtn:
+        copyCurrentHTML,
+
+
+        backupBtn:
+        backupCurrent,
+
+
+        txtBtn:
+        exportCurrentText,
+
+
+        pdfBtn:
+        savePDF,
+
+
+        deleteBtn:
+        deleteSelectedCharacters
+
+
+
+    };
+
+
+
+
+
+    Object.keys(buttons)
+    .forEach(id=>{
+
+
+        const btn =
+        document.querySelector(
+        "#" + id
+        );
+
+
+
+        if(btn){
+
+            btn.addEventListener(
+            "click",
+            buttons[id]
+            );
+
+        }
+
+
+    });
+
+
+
+
+
+    const search =
+    document.querySelector(
+    "#searchInput"
+    );
+
+
+
+    if(search){
+
+
+        search.addEventListener(
+        "input",
+        e=>{
+
+
+            highlightSearch(
+            e.target.value
+            );
+
+
+        });
+
+
+    }
+
+
 
 }
 
-function buildStats(){
 
-let total = 0;
 
-parsedData.forEach(item=>{
 
-if(item.text){
 
-total += item.text.length;
 
-}
 
-});
 
-stats.innerHTML = `
-총 글자 수
-<br><br>
-<b>${total.toLocaleString()}</b>
-`;
 
-}
+/*
+========================
 
-function cleanText(){
+로그 파싱
 
-let text = rawLog.value;
+========================
+*/
 
-text =
-text.replace(/\.{6}/g,"⋯⋯");
 
-text =
-text.replace(/\.{3}/g,"⋯");
+function parseCurrent(){
 
-text =
-text.replace(/-{2,}/g,"─");
 
-rawLog.value = text;
-}
 
-function exportHTML(){
+    const input =
+    document.querySelector(
+    "#logInput"
+    );
 
-let html =
-`<div class="trpg-log">\n`;
 
-parsedData.forEach(item=>{
 
-if(item.type==="dialog"){
+    if(!input.value)
+        return;
 
-html += `
-<div class="dialog">
-<b>${item.speaker}</b>
-${item.text}
-</div>
-`;
 
-}else{
 
-html += `
-<div class="narration">
-${item.text}
-</div>
-`;
+    currentData =
+    parseLog(
+        input.value
+    );
+
+
+
+    renderAll();
+
 
 }
 
-});
 
-html += "</div>";
 
-navigator.clipboard.writeText(html);
 
-alert("HTML 복사 완료");
+
+
+
+
+
+
+/*
+========================
+
+정리 적용
+
+========================
+*/
+
+
+function cleanCurrent(){
+
+
+    currentData =
+    cleanLog(
+        currentData
+    );
+
+
+
+    renderAll();
+
+
 }
 
-function searchText(e){
 
-const keyword = e.target.value;
 
-const messages =
-document.querySelectorAll(".message");
 
-messages.forEach(msg=>{
 
-if(
-msg.textContent.includes(keyword)
-){
-msg.style.background="#fff8cc";
-}else{
-msg.style.background="";
+
+
+
+
+
+/*
+========================
+
+전체 렌더링
+
+========================
+*/
+
+
+function renderAll(){
+
+
+
+    const preview =
+    document.querySelector(
+    "#preview"
+    );
+
+
+
+    renderLog(
+        currentData,
+        preview
+    );
+
+
+
+
+
+    currentStats =
+    analyzeStats(
+        currentData
+    );
+
+
+
+
+
+    renderStatistics();
+
+
 }
 
-});
+
+
+
+
+
+
+
+
+/*
+========================
+
+통계 출력
+
+========================
+*/
+
+
+function renderStatistics(){
+
+
+
+    const box =
+    document.querySelector(
+    "#statistics"
+    );
+
+
+
+    if(box){
+
+
+        box.innerHTML =
+        renderStatsHTML(
+            currentStats
+        );
+
+
+    }
+
+
+}
+
+
+
+
+
+
+
+
+
+
+/*
+========================
+
+파일 읽기
+
+========================
+*/
+
+
+function loadFile(event){
+
+
+
+    const file =
+    event.target.files[0];
+
+
+
+    if(!file)
+        return;
+
+
+
+    const reader =
+    new FileReader();
+
+
+
+    reader.onload =
+    e=>{
+
+
+        document.querySelector(
+        "#logInput"
+        )
+        .value =
+        e.target.result;
+
+
+
+        parseCurrent();
+
+
+    };
+
+
+
+    reader.readAsText(
+        file,
+        "UTF-8"
+    );
+
+
+}
+
+
+
+
+
+
+
+
+
+/*
+========================
+
+HTML 복사
+
+========================
+*/
+
+
+function copyCurrentHTML(){
+
+
+
+    copyHTML(
+        currentData
+    );
+
+
+}
+
+
+
+
+
+
+
+
+
+/*
+========================
+
+백업
+
+========================
+*/
+
+
+function backupCurrent(){
+
+
+
+    exportBackup(
+        currentData
+    );
+
+
+}
+
+
+
+
+
+
+
+
+
+/*
+========================
+
+TXT
+
+========================
+*/
+
+
+function exportCurrentText(){
+
+
+    exportText(
+        currentData
+    );
+
+
+}
+
+
+
+
+
+
+
+
+
+/*
+========================
+
+캐릭터 삭제
+
+========================
+*/
+
+
+function deleteSelectedCharacters(){
+
+
+
+    const checked =
+    document.querySelectorAll(
+    ".character-check:checked"
+    );
+
+
+
+    const remove =
+    Array.from(
+        checked
+    )
+    .map(
+        e=>e.value
+    );
+
+
+
+
+
+    currentData =
+    currentData.filter(
+    item=>{
+
+
+        if(
+            item.type==="dialog"
+        ){
+
+
+            return !
+            remove.includes(
+                item.speaker
+            );
+
+
+        }
+
+
+        return true;
+
+
+    });
+
+
+
+    renderAll();
+
 
 }
