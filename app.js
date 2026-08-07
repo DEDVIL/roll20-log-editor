@@ -711,15 +711,8 @@ return true;
 
 
 
-currentCharacters =
-
-currentCharacters.filter(
-character=>
-
-!remove.includes(
-character.name
-)
-
+removeCharacters(
+remove
 );
 
 
