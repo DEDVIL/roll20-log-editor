@@ -20,14 +20,19 @@ function parseLog(raw){
 
     */
 
-    if(
-        /<[^>]+>/.test(raw)
-    ){
+ let originalHTML=null;
 
-        raw =
-        convertHTMLToText(raw);
 
-    }
+if(
+ /<[^>]+>/.test(raw)
+){
+
+
+ originalHTML =
+ parseRoll20HTML(raw);
+
+
+}
 
 
 
