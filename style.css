@@ -1,47 +1,56 @@
 /*
 TRPG Log Studio
 
-Responsive Archive UI
+Archive UI Style
 
+Responsive
 Roll20 Log Viewer
 */
 
 
+/* =================================
+   Theme Variables
+================================= */
+
+
 :root{
 
-    --bg-color:#ffffff;
+    --bg-color:#f7f7fb;
 
     --panel-color:#ffffff;
 
-    --text-color:#222222;
+    --chat-color:#ffffff;
 
-    --sub-text:#777777;
+    --text-color:#222;
 
-    --chat-color:#f5f5f5;
+    --sub-text:#777;
 
     --primary:#6c7ae0;
 
+    --primary-light:#eef0ff;
+
     --danger:#e57373;
 
-    --border:#e5e5e5;
+    --border:#e7e7ee;
 
-    --radius:18px;
+    --radius:22px;
 
     --shadow:
-    0 5px 18px rgba(0,0,0,.08);
+    0 10px 30px rgba(0,0,0,.06);
 
 
-    --sidebar-width:340px;
+    --max-width:1500px;
 
-    --max-width:1400px;
+    --sidebar-width:360px;
 
 }
 
 
 
-/* =========================
-Reset
-========================= */
+
+/* =================================
+ Reset
+================================= */
 
 
 *{
@@ -64,7 +73,7 @@ body{
 
     margin:0;
 
-    padding:24px;
+    padding:30px;
 
 
     background:
@@ -77,20 +86,13 @@ body{
 
     font-family:
 
+    "Pretendard",
     "Noto Sans KR",
     Arial,
     sans-serif;
 
 
-    line-height:1.6;
-
-}
-
-
-
-img{
-
-    max-width:100%;
+    line-height:1.7;
 
 }
 
@@ -98,9 +100,10 @@ img{
 
 
 
-/* =========================
-Header
-========================= */
+
+/* =================================
+ Header
+================================= */
 
 
 .header{
@@ -111,7 +114,32 @@ Header
 
     margin:
 
-    0 auto 24px;
+    0 auto 30px;
+
+
+}
+
+
+.header h1{
+
+    margin:0;
+
+    font-size:32px;
+
+    font-weight:900;
+
+
+    letter-spacing:-1px;
+
+}
+
+
+.help{
+
+    color:
+    var(--sub-text);
+
+    font-size:14px;
 
 }
 
@@ -119,9 +147,9 @@ Header
 
 
 
-/* =========================
-Layout
-========================= */
+/* =================================
+ Layout
+================================= */
 
 
 .app{
@@ -143,23 +171,19 @@ Layout
     1fr;
 
 
-    gap:24px;
+    gap:30px;
 
 
     align-items:start;
-
 
 }
 
 
 
 .sidebar,
-
 .main{
 
-
     min-width:0;
-
 
 }
 
@@ -169,16 +193,14 @@ Layout
 
 
 
-/* =========================
-Panel
-========================= */
+/* =================================
+ Panel
+================================= */
 
 
 .panel{
 
-
     background:
-
     var(--panel-color);
 
 
@@ -192,16 +214,14 @@ Panel
     var(--radius);
 
 
-    padding:20px;
+    padding:24px;
 
 
-    margin-bottom:20px;
+    margin-bottom:22px;
 
 
     box-shadow:
-
     var(--shadow);
-
 
 }
 
@@ -212,27 +232,84 @@ Panel
 
     margin:
 
-    0 0 15px;
+    0 0 18px;
 
 
     font-size:18px;
 
 
+    font-weight:800;
+
+
 }
 
 
 
 
 
-.help{
 
-    color:
+/* =================================
+ Textarea Input
+================================= */
 
-    var(--sub-text);
+
+.log-input{
+
+
+    width:100%;
+
+
+    min-height:260px;
+
+
+    resize:vertical;
+
+
+    padding:18px;
+
+
+    border-radius:18px;
+
+
+    border:
+
+    1px solid var(--border);
+
+
+    background:#fafaff;
+
+
+    color:var(--text-color);
 
 
     font-size:14px;
 
+
+    line-height:1.7;
+
+
+    outline:none;
+
+
+    transition:.2s;
+
+}
+
+
+
+.log-input:focus{
+
+
+    border-color:
+
+    var(--primary);
+
+
+    box-shadow:
+
+    0 0 0 4px rgba(108,122,224,.12);
+
+
 }
 
 
@@ -240,19 +317,29 @@ Panel
 
 
 
-
-/* =========================
-Buttons
-========================= */
+/* =================================
+ Buttons
+================================= */
 
 
 button{
 
 
-    width:auto;
+    width:100%;
+
+
+    padding:
+
+    13px 16px;
+
+
+    margin-top:10px;
 
 
     border:none;
+
+
+    border-radius:14px;
 
 
     background:
@@ -263,26 +350,16 @@ button{
     color:white;
 
 
-    padding:
-
-    11px 16px;
+    font-weight:700;
 
 
-    border-radius:
-
-    12px;
+    font-size:14px;
 
 
     cursor:pointer;
 
 
-    font-weight:700;
-
-
     transition:.2s;
-
-
-    margin-bottom:8px;
 
 
 }
@@ -292,15 +369,27 @@ button{
 button:hover{
 
 
-    opacity:.85;
-
-
     transform:
 
-    translateY(-1px);
+    translateY(-2px);
+
+
+    box-shadow:
+
+    0 8px 20px rgba(108,122,224,.25);
 
 
 }
+
+
+
+button:active{
+
+
+    transform:none;
+
+}
+
 
 
 
@@ -316,47 +405,23 @@ button.danger{
 
 
 
-.actions button{
 
 
-    display:block;
+/* =================================
+ Search
+================================= */
 
 
-    width:100%;
-
-
-}
-
-
-
-
-
-
-
-/* =========================
-Input
-========================= */
-
-
-input[type="text"],
-
-
-input[type="file"]{
+.search{
 
 
     width:100%;
 
 
-}
+    padding:14px 16px;
 
 
-
-input[type="text"]{
-
-
-    padding:
-
-    12px;
+    border-radius:14px;
 
 
     border:
@@ -364,19 +429,161 @@ input[type="text"]{
     1px solid var(--border);
 
 
-    border-radius:
+    background:#fafafa;
 
-    12px;
+
+    font-size:14px;
+
+
+}
+
+
+
+
+
+
+/* =================================
+ Character List
+================================= */
+
+
+.character-list{
+
+
+    display:grid;
+
+
+    grid-template-columns:
+
+    1fr;
+
+
+    gap:15px;
+
+}
+
+
+
+.character-card{
+
+
+    display:flex;
+
+
+    gap:15px;
+
+
+    align-items:center;
+
+
+    padding:16px;
+
+
+    border-radius:18px;
 
 
     background:
 
-    var(--panel-color);
+    #fafaff;
 
 
-    color:
+    border:
 
-    var(--text-color);
+    1px solid var(--border);
+
+
+}
+
+
+
+
+.character-preview{
+
+
+    width:70px;
+
+
+    height:70px;
+
+
+    border-radius:50%;
+
+
+    object-fit:cover;
+
+
+    flex-shrink:0;
+
+
+}
+
+
+
+.character-name{
+
+
+    font-weight:800;
+
+
+}
+
+
+
+.character-role{
+
+
+    display:inline-block;
+
+
+    margin-top:5px;
+
+
+    padding:
+
+    3px 10px;
+
+
+    border-radius:999px;
+
+
+    background:
+
+    var(--primary-light);
+
+
+    font-size:12px;
+
+
+}
+
+
+
+
+
+
+/* =================================
+ Theme Controls
+================================= */
+
+
+label{
+
+
+    display:flex;
+
+
+    justify-content:space-between;
+
+
+    align-items:center;
+
+
+    padding:
+
+    10px 0;
+
+
+    color:var(--sub-text);
 
 
 }
@@ -395,92 +602,10 @@ input[type="color"]{
     border:none;
 
 
-}
+    background:none;
 
 
-
-
-
-
-
-/* =========================
-Character
-========================= */
-
-
-.character-list{
-
-
-    display:flex;
-
-
-    flex-direction:column;
-
-
-    gap:14px;
-
-
-}
-
-
-
-
-.character-card{
-
-
-    display:grid;
-
-
-    grid-template-columns:
-
-    70px 1fr;
-
-
-    gap:14px;
-
-
-    padding:15px;
-
-
-    background:
-
-    var(--panel-color);
-
-
-    border:
-
-    1px solid var(--border);
-
-
-    border-radius:
-
-    16px;
-
-
-}
-
-
-
-
-.character-preview,
-
-
-.character-image{
-
-
-    width:60px;
-
-
-    height:60px;
-
-
-    object-fit:cover;
-
-
-    border-radius:50%;
-
-
-    background:#ddd;
+    cursor:pointer;
 
 
 }
@@ -489,51 +614,10 @@ Character
 
 
 
-.character-name{
 
-
-    font-weight:800;
-
-
-}
-
-
-
-
-
-.character-role{
-
-
-    display:inline-block;
-
-
-    padding:
-
-    3px 10px;
-
-
-    border-radius:
-
-    999px;
-
-
-    background:
-
-    rgba(108,122,224,.15);
-
-
-    font-size:12px;
-
-
-}
-
-
-
-
-
-/* =========================
-Log
-========================= */
+/* =================================
+ Log Viewer
+================================= */
 
 
 .log-container{
@@ -545,13 +629,18 @@ Log
     flex-direction:column;
 
 
-    gap:16px;
-
+    gap:20px;
 
 }
 
 
 
+
+
+
+/* =================================
+ Message Card
+================================= */
 
 
 .message-card{
@@ -562,13 +651,13 @@ Log
 
     grid-template-columns:
 
-    60px 1fr;
+    70px 1fr;
 
 
-    gap:15px;
+    gap:18px;
 
 
-    padding:20px;
+    padding:22px;
 
 
     background:
@@ -576,14 +665,12 @@ Log
     var(--chat-color);
 
 
-    border-radius:
-
-    var(--radius);
+    border-radius:24px;
 
 
-    border-left:
+    border:
 
-    5px solid var(--primary);
+    1px solid var(--border);
 
 
     box-shadow:
@@ -591,7 +678,40 @@ Log
     var(--shadow);
 
 
-    overflow:hidden;
+    position:relative;
+
+
+}
+
+
+
+.message-card::before{
+
+
+    content:"";
+
+
+    position:absolute;
+
+
+    left:0;
+
+
+    top:20px;
+
+
+    bottom:20px;
+
+
+    width:5px;
+
+
+    border-radius:10px;
+
+
+    background:
+
+    var(--primary);
 
 
 }
@@ -603,20 +723,28 @@ Log
 
     transform:
 
-    translateY(-2px);
+    translateY(-3px);
 
 
 }
 
 
 
+
+
 .message-card .character-image{
 
 
-    width:55px;
+    width:65px;
 
 
-    height:55px;
+    height:65px;
+
+
+    border-radius:50%;
+
+
+    object-fit:cover;
 
 
 }
@@ -626,7 +754,10 @@ Log
 .message-card .character-name{
 
 
-    margin-bottom:5px;
+    font-size:16px;
+
+
+    font-weight:900;
 
 
 }
@@ -636,9 +767,9 @@ Log
 
 
 
-/* =========================
-Roll20 HTML
-========================= */
+/* =================================
+ Roll20 Content
+================================= */
 
 
 .message-card img{
@@ -668,44 +799,41 @@ Roll20 HTML
 
 
 .message-card iframe,
-
-
 .message-card script,
-
-
 .message-card style{
 
 
     display:none!important;
 
-
-}
-
-
-
-.message-card div,
-
-
-.message-card span{
-
-
-    max-width:100%;
-
-
 }
 
 
 
 
-/* =========================
-Statistics
-========================= */
+.message-card{
+
+
+    overflow:hidden;
+
+}
+
+
+
+
+
+
+/* =================================
+ Statistics
+================================= */
 
 
 #statistics{
 
 
-    margin-top:10px;
+    display:grid;
+
+
+    gap:12px;
 
 
 }
@@ -713,14 +841,18 @@ Statistics
 
 
 .stat-box,
-
-
 .character-item{
+
+
+    padding:18px;
 
 
     background:
 
-    var(--panel-color);
+    #fafaff;
+
+
+    border-radius:18px;
 
 
     border:
@@ -728,17 +860,6 @@ Statistics
     1px solid var(--border);
 
 
-    border-radius:
-
-    14px;
-
-
-    padding:15px;
-
-
-    margin-bottom:12px;
-
-
 }
 
 
@@ -746,39 +867,18 @@ Statistics
 
 
 
-
-/* =========================
-Search
-========================= */
-
-
-.search{
+/* =================================
+ Mobile
+================================= */
 
 
-    margin-bottom:0;
-
-
-}
-
-
-
-
-
-
-
-/* =========================
-Mobile
-========================= */
-
-
-@media(max-width:900px){
+@media(max-width:1000px){
 
 
 body{
 
 
-    padding:14px;
-
+    padding:15px;
 
 }
 
@@ -819,47 +919,32 @@ body{
 .character-list{
 
 
-    display:grid;
-
-
     grid-template-columns:
 
     repeat(
-
-    auto-fit,
-
-    minmax(250px,1fr)
-
+        2,
+        1fr
     );
 
 
 }
 
 
-
-.message-card{
-
-
-    padding:16px;
-
-
-}
-
-
-
 }
 
 
 
 
-@media(max-width:480px){
+
+
+@media(max-width:600px){
 
 
 
-button{
+.header h1{
 
 
-    width:100%;
+    font-size:26px;
 
 
 }
@@ -869,7 +954,19 @@ button{
 .panel{
 
 
-    padding:15px;
+    padding:18px;
+
+
+}
+
+
+
+.character-list{
+
+
+    grid-template-columns:
+
+    1fr;
 
 
 }
@@ -882,6 +979,9 @@ button{
     display:block;
 
 
+    padding:18px;
+
+
 }
 
 
@@ -889,23 +989,85 @@ button{
 .message-card .character-image{
 
 
-    margin-bottom:10px;
+    margin-bottom:12px;
 
 
 }
 
 
 
-.character-card{
+button{
 
 
-    grid-template-columns:
-
-    55px 1fr;
+    padding:15px;
 
 
 }
 
+
+
+}
+
+
+
+
+
+/* =================================
+ Dark Mode
+================================= */
+
+
+@media(prefers-color-scheme:dark){
+
+
+:root{
+
+
+    --bg-color:#11131a;
+
+
+    --panel-color:#181b24;
+
+
+    --chat-color:#202430;
+
+
+    --text-color:#eeeeee;
+
+
+    --sub-text:#aaa;
+
+
+    --border:#303544;
+
+
+}
+
+
+
+.log-input,
+.search{
+
+
+    background:#202430;
+
+
+    color:white;
+
+
+}
+
+
+
+.character-card,
+.stat-box,
+.character-item{
+
+
+    background:#202430;
+
+
+}
 
 
 }
