@@ -126,7 +126,8 @@ if(
 
                 text:text
 
-
+html:
+originalHTML
 
             };
 
