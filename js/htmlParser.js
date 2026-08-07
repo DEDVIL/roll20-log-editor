@@ -21,16 +21,27 @@ raw;
 
 
 
+/*
+캐릭터 먼저 추출
 
-sanitizeHTML(
+*/
+
+
+const characters =
+extractCharactersFromHTML(
 container
 );
 
 
 
 
-const characters =
-extractCharactersFromHTML(
+/*
+보안 정리
+
+*/
+
+
+sanitizeHTML(
 container
 );
 
@@ -44,7 +55,6 @@ container
 
 
 
-
 return {
 
 
@@ -52,8 +62,10 @@ characters,
 
 messages,
 
+
 html:
 container.innerHTML
+
 
 
 };
@@ -81,6 +93,9 @@ function extractMessages(root){
 const result=[];
 
 
+const used=new Set();
+
+
 
 const blocks =
 root.querySelectorAll(
@@ -89,18 +104,22 @@ root.querySelectorAll(
 
 
 
-
-
 blocks.forEach(block=>{
 
 
-const text =
-block.innerText?.trim();
+const key =
+block.innerHTML;
 
 
 
-if(!text)
+if(
+used.has(key)
+)
 return;
+
+
+
+used.add(key);
 
 
 
@@ -110,11 +129,38 @@ findSpeaker(block);
 
 
 
+let text =
+block.innerText?.trim();
+
+
+
+if(!text)
+return;
+
+
+
+if(speaker){
+
+
+text =
+text
+.replace(
+speaker,
+""
+)
+.trim();
+
+
+}
+
+
+
 
 result.push({
 
 
 type:
+
 speaker
 ?
 "dialog"
@@ -122,22 +168,13 @@ speaker
 "system",
 
 
-
-speaker:
 speaker,
-
-
-
-text:
-
 
 
 text,
 
 
-
 html:
-
 block.innerHTML
 
 
@@ -150,12 +187,11 @@ block.innerHTML
 
 
 
-
 return result;
 
 
-}
 
+}
 
 
 
@@ -181,12 +217,9 @@ block.querySelector(
 
 
 
-
 if(name){
 
-
 return name.innerText.trim();
-
 
 }
 
@@ -194,10 +227,7 @@ return name.innerText.trim();
 
 return "";
 
-
-
 }
-
 
 
 
@@ -216,35 +246,33 @@ return "";
 function sanitizeHTML(root){
 
 
-
 const allowed=[
 
 
 "DIV",
-
 "SPAN",
-
 "P",
-
 "BR",
-
 "IMG",
 
 "STRONG",
-
 "B",
-
 "I",
-
 "EM",
+"U",
 
-"U"
+"TABLE",
+"TBODY",
+"THEAD",
+"TR",
+"TD",
 
+"HR",
+
+"BLOCKQUOTE"
 
 
 ];
-
-
 
 
 
@@ -253,10 +281,7 @@ root.querySelectorAll("*");
 
 
 
-
-
 all.forEach(el=>{
-
 
 
 if(
@@ -270,6 +295,7 @@ el.tagName
 el.replaceWith(
 ...el.childNodes
 );
+
 
 
 }
@@ -287,11 +313,9 @@ el
 
 
 
-
 if(
 el.tagName==="IMG"
 ){
-
 
 
 const src =
@@ -314,9 +338,7 @@ src.startsWith(
 el.remove();
 
 
-
 }
-
 
 
 }
@@ -328,7 +350,6 @@ el.remove();
 
 
 }
-
 
 
 
@@ -371,9 +392,8 @@ const keep=[
 "margin"
 
 
+
 ];
-
-
 
 
 
@@ -389,18 +409,13 @@ return;
 
 
 
-
-
 const result=[];
-
-
 
 
 
 style
 .split(";")
 .forEach(rule=>{
-
 
 
 const pair =
@@ -415,7 +430,6 @@ return;
 
 
 
-
 const key =
 pair[0]
 .trim();
@@ -425,8 +439,6 @@ pair[0]
 const value =
 pair[1]
 .trim();
-
-
 
 
 
@@ -444,12 +456,7 @@ result.push(
 
 
 
-
 });
-
-
-
-
 
 
 
@@ -466,7 +473,6 @@ result.join(";")
 
 
 }
-
 else{
 
 
