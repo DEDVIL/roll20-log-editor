@@ -9,7 +9,6 @@ HTML / PDF / Backup 출력
 */
 
 
-
 /*
 =================================
 
@@ -18,17 +17,10 @@ HTML / PDF / Backup 출력
 =================================
 */
 
-
 function createTistoryHTML(data){
 
 
-let html = `
-
-<style>
-
-${tistoryCSS}
-
-</style>
+    let html = `
 
 <div class="trpg-log">
 
@@ -36,22 +28,18 @@ ${tistoryCSS}
 
 
 
+    data.forEach(item=>{
 
 
-data.forEach(item=>{
+        html +=
+        convertItemToHTML(item);
 
 
-html +=
-convertItemToHTML(item);
-
-
-
-});
+    });
 
 
 
-
-html += `
+    html += `
 
 </div>
 
@@ -59,17 +47,10 @@ html += `
 
 
 
-
-
-return html;
-
+    return html;
 
 
 }
-
-
-
-
 
 
 
@@ -87,53 +68,79 @@ return html;
 function convertItemToHTML(item){
 
 
-
-let html="";
-
+    let html = "";
 
 
 
-
-switch(item.type){
-
-
-
-case "dialog":
+    switch(item.type){
 
 
 
-const character =
-getCharacter(
-item.speaker
-);
+        /*
+        =========================
+
+        캐릭터 대사
+
+        =========================
+        */
+
+
+        case "dialog":
 
 
 
+            const character =
+            getCharacter(
+                item.speaker
+            );
 
 
-html += `
+
+            html += `
 
 <div class="trpg-message"
 
-style="border-left-color:${character.color}"
-
->
-
+style="
+border-left-color:${character.color};
+">
 
 
 <div class="trpg-speaker"
 
-style="color:${character.color}"
+style="
+color:${character.color};
+">
 
->
+${escapeExport(
+    item.speaker
+)}
 
-${escapeExport(item.speaker)}
+
+${
+
+character.role
+
+?
+
+`
+<span class="trpg-role">
+${escapeExport(character.role)}
+</span>
+`
+
+:
+
+""
+
+}
+
 
 </div>
 
 
 
-<div class="trpg-text">
+<div class="trpg-body">
+
 
 ${
 
@@ -145,9 +152,16 @@ item.html
 
 :
 
-escapeExport(item.text)
+escapeExport(
+    item.text
+)
+.replace(
+    /\n/g,
+    "<br>"
+)
 
 }
+
 
 </div>
 
@@ -159,7 +173,7 @@ escapeExport(item.text)
 
 
 
-break;
+        break;
 
 
 
@@ -167,13 +181,24 @@ break;
 
 
 
-case "narration":
+        /*
+        =========================
+
+        서술
+
+        =========================
+        */
 
 
-html += `
+        case "narration":
+
+
+
+            html += `
 
 <div class="trpg-narration">
 
+
 ${
 
 item.html
@@ -184,15 +209,24 @@ item.html
 
 :
 
-escapeExport(item.text)
+escapeExport(
+    item.text
+)
+.replace(
+    /\n/g,
+    "<br>"
+)
 
 }
+
 
 </div>
 
 `;
 
-break;
+
+
+        break;
 
 
 
@@ -200,20 +234,36 @@ break;
 
 
 
-case "handout":
+        /*
+        =========================
+
+        핸드아웃
+
+        =========================
+        */
 
 
-html += `
+        case "handout":
+
+
+
+            html += `
 
 <div class="trpg-handout">
 
-${escapeExport(item.text)}
+
+${escapeExport(
+    item.text
+)}
+
 
 </div>
 
 `;
 
-break;
+
+
+        break;
 
 
 
@@ -221,46 +271,42 @@ break;
 
 
 
-case "dice":
+        /*
+        =========================
+
+        주사위
+
+        =========================
+        */
 
 
-html += `
-
-<div class="trpg-dice">
-
-✷ 판정 ✷
-
-<br>
-
-${escapeExport(item.text)}
-
-</div>
-
-`;
-
-break;
+        case "dice":
 
 
 
-
-
-
-
-case "roll-design":
-
-
-
-html += `
+            html += `
 
 <div class="trpg-roll">
 
-${item.html}
+
+✷ 판정 ✷
+
+
+<br>
+
+
+${escapeExport(
+    item.text
+)}
+
 
 </div>
 
 `;
 
-break;
+
+
+        break;
 
 
 
@@ -268,31 +314,112 @@ break;
 
 
 
-case "divider":
+        /*
+        =========================
+
+        롤꾸 원본
+
+        =========================
+        */
 
 
-html += `
+        case "roll-design":
 
-<hr>
+
+
+            html += `
+
+<div class="trpg-roll-design">
+
+
+${
+
+item.html || ""
+
+}
+
+
+</div>
 
 `;
 
-break;
 
+
+        break;
+
+
+
+
+
+
+
+        /*
+        =========================
+
+        구분선
+
+        =========================
+        */
+
+
+        case "divider":
+
+
+
+            html += `
+
+<hr class="trpg-divider">
+
+
+`;
+
+
+
+        break;
+
+
+
+        default:
+
+
+
+            if(item.html){
+
+
+                html += item.html;
+
+
+            }
+
+            else if(item.text){
+
+
+                html += `
+
+<div>
+
+${escapeExport(
+    item.text
+)}
+
+</div>
+
+`;
+
+
+            }
+
+
+
+    }
+
+
+
+
+    return html;
 
 
 }
-
-
-
-return html;
-
-
-
-}
-
-
-
 
 
 
@@ -311,27 +438,27 @@ HTML 복사
 function copyHTML(data){
 
 
-const html =
-createTistoryHTML(data);
+    const html =
+    createTistoryHTML(data);
 
 
 
-navigator.clipboard
-.writeText(html)
-.then(()=>{
+    navigator.clipboard
+    .writeText(html)
+
+    .then(()=>{
 
 
-alert(
-"티스토리 HTML 복사 완료"
-);
+        alert(
+            "티스토리 HTML 복사 완료"
+        );
 
 
-});
+    });
 
 
 
 }
-
 
 
 
@@ -353,35 +480,32 @@ function exportBackup(data){
 
 
 
-const json =
-JSON.stringify(
+    const json =
+    JSON.stringify(
 
-data,
+        data,
 
-null,
+        null,
 
-2
+        2
 
-);
-
-
+    );
 
 
-downloadFile(
 
-json,
+    downloadFile(
 
-"trpg-log-backup.json",
+        json,
 
-"application/json"
+        "trpg-log-backup.json",
 
-);
+        "application/json"
+
+    );
 
 
 
 }
-
-
 
 
 
@@ -401,39 +525,34 @@ TXT 저장
 function exportText(data){
 
 
-
-let text="";
-
+    let text = "";
 
 
 
-
-data.forEach(item=>{
-
+    data.forEach(item=>{
 
 
-if(
-item.type==="dialog"
-){
+        if(
+            item.type==="dialog"
+        ){
 
 
+            text +=
 
-text +=
+`${item.speaker}:${item.text || ""}
 
-`${item.speaker}:${item.text}\n\n`;
-
-
-
-}
+`;
 
 
-else if(
-item.text
-){
+        }
 
 
+        else if(
+            item.text
+        ){
 
-text +=
+
+            text +=
 
 item.text
 
@@ -442,31 +561,29 @@ item.text
 "\n\n";
 
 
+        }
+
+
+
+    });
+
+
+
+
+
+    downloadFile(
+
+        text,
+
+        "trpg-log.txt",
+
+        "text/plain"
+
+    );
+
+
 
 }
-
-
-
-});
-
-
-
-
-
-downloadFile(
-
-text,
-
-"trpg-log.txt",
-
-"text/plain"
-
-);
-
-
-
-}
-
 
 
 
@@ -478,63 +595,75 @@ text,
 /*
 =================================
 
-다운로드
+파일 다운로드
 
 =================================
 */
 
 
 function downloadFile(
-content,
-filename,
-type
+    content,
+    filename,
+    type
 ){
 
 
 
-const blob =
-new Blob(
+    const blob =
+    new Blob(
 
-[content],
+        [content],
 
-{
-type
+        {
+            type
+        }
+
+    );
+
+
+
+    const url =
+    URL.createObjectURL(
+        blob
+    );
+
+
+
+    const a =
+    document.createElement(
+        "a"
+    );
+
+
+
+    a.href =
+    url;
+
+
+
+    a.download =
+    filename;
+
+
+
+    document.body.appendChild(a);
+
+
+
+    a.click();
+
+
+
+    document.body.removeChild(a);
+
+
+
+    URL.revokeObjectURL(
+        url
+    );
+
+
 }
-
-);
-
-
-
-
-const url =
-URL.createObjectURL(blob);
-
-
-
-
-const a =
-document.createElement(
-"a"
-);
-
-
-
-a.href=url;
-
-a.download=filename;
-
-
-
-a.click();
-
-
-
-URL.revokeObjectURL(url);
-
-
-
-}
-
 
 
 
@@ -546,17 +675,18 @@ URL.revokeObjectURL(url);
 /*
 =================================
 
-PDF
+PDF 출력
+
+브라우저 인쇄 사용
 
 =================================
-
 */
 
 
 function savePDF(){
 
 
-window.print();
+    window.print();
 
 
 }
@@ -568,11 +698,10 @@ window.print();
 
 
 
-
 /*
 =================================
 
-HTML 문자 보호
+HTML 보호
 
 =================================
 */
@@ -581,27 +710,38 @@ HTML 문자 보호
 function escapeExport(text){
 
 
-if(!text)
-return "";
+    if(!text)
+        return "";
 
 
 
-return String(text)
+    return String(text)
 
-.replace(
-/&/g,
-"&amp;"
-)
+    .replace(
+        /&/g,
+        "&amp;"
+    )
 
-.replace(
-/</g,
-"&lt;"
-)
+    .replace(
+        /</g,
+        "&lt;"
+    )
 
-.replace(
-/>/g,
-"&gt;"
-);
+    .replace(
+        />/g,
+        "&gt;"
+    )
+
+    .replace(
+        /"/g,
+        "&quot;"
+    )
+
+    .replace(
+        /'/g,
+        "&#039;"
+    );
+
 
 }
 
@@ -612,12 +752,18 @@ return String(text)
 
 
 
+/*
+=================================
+
+티스토리용 CSS
+
+=================================
+*/
+
 
 const tistoryCSS = `
 
-
 .trpg-message{
-
 
 padding:20px;
 
@@ -629,28 +775,43 @@ border-radius:15px;
 
 border-left:5px solid;
 
-
 }
 
 
 
 .trpg-speaker{
 
-
 font-weight:bold;
 
 margin-bottom:8px;
-
 
 }
 
 
 
-.trpg-text{
+.trpg-role{
 
+font-size:12px;
+
+opacity:0.7;
+
+}
+
+
+
+.trpg-body{
 
 line-height:1.7;
 
+}
+
+
+
+.trpg-narration{
+
+margin:15px 0;
+
+line-height:1.8;
 
 }
 
@@ -658,13 +819,11 @@ line-height:1.7;
 
 .trpg-handout{
 
-
 padding:30px;
 
 background:#fffaf0;
 
 border-radius:20px;
-
 
 }
 
@@ -672,9 +831,19 @@ border-radius:20px;
 
 .trpg-roll{
 
+padding:15px;
+
+border-radius:12px;
+
+background:#f5f5f5;
+
+}
+
+
+
+.trpg-divider{
 
 margin:20px 0;
-
 
 }
 
