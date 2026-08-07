@@ -277,33 +277,18 @@ HTML 분석
 */
 
 
-let parsed =
-parseLog(
+const parsed =
+parseRoll20HTML(
 raw
 );
 
 
-
-
-
-/*
-캐릭터 추출
-
-*/
-
-
 currentCharacters =
-extractCharacters(
-parsed
-);
-
-
-
-
+parsed.characters;
 
 
 currentData =
-parsed;
+parsed.messages;
 
 
 
@@ -329,38 +314,43 @@ renderAll();
 function cleanCurrent(){
 
 
+if(typeof cleanLog==="function"){
 
 currentData =
 cleanLog(
 currentData
 );
 
+}
 
 
+
+if(typeof formatLog==="function"){
 
 currentData =
 formatLog(
 currentData
 );
 
+}
 
 
+
+if(typeof removeDuplicateLogs==="function"){
 
 currentData =
 removeDuplicateLogs(
 currentData
 );
 
-
+}
 
 
 
 renderAll();
 
 
-
 }
-
 
 
 
