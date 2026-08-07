@@ -1,16 +1,17 @@
 /*
- TRPG Log Studio
+TRPG Log Studio
 
- Main Controller
+Main Controller
 
- 모든 기능 연결
+모든 기능 연결
 */
-
 
 
 let currentData = [];
 
 let currentStats = {};
+
+let currentCharacters = [];
 
 
 
@@ -18,9 +19,7 @@ let currentStats = {};
 
 /*
 ========================
-
 DOM 준비
-
 ========================
 */
 
@@ -30,80 +29,75 @@ document.addEventListener(
 ()=>{
 
 
-    const input =
-    document.querySelector(
-    "#logInput"
-    );
-
-
-    const preview =
-    document.querySelector(
-    "#preview"
-    );
+const input =
+document.querySelector(
+"#logInput"
+);
 
 
 
-    const fileInput =
-    document.querySelector(
-    "#fileInput"
-    );
+const fileInput =
+document.querySelector(
+"#fileInput"
+);
 
 
 
 
 
-    /*
-    붙여넣기 자동 처리
+/*
+붙여넣기 감지
 
-    */
-
-
-    input.addEventListener(
-    "paste",
-    ()=>{
+*/
 
 
-        setTimeout(
-        parseCurrent,
-        100
-        );
+if(input){
 
 
-    });
+input.addEventListener(
+"paste",
+()=>{
 
 
+setTimeout(
+parseCurrent,
+100
+);
 
 
+});
 
 
-    /*
-    파일 업로드
-
-    */
-
-
-    if(fileInput){
-
-
-        fileInput.addEventListener(
-        "change",
-        loadFile
-        );
-
-
-    }
+}
 
 
 
 
 
-    /*
-    버튼 연결
 
-    */
+/*
+파일 입력
+
+*/
 
 
-    bindButtons();
+if(fileInput){
+
+
+fileInput.addEventListener(
+"change",
+loadFile
+);
+
+
+}
+
+
+
+
+
+
+bindButtons();
 
 
 });
@@ -115,13 +109,9 @@ document.addEventListener(
 
 
 
-
-
 /*
 ========================
-
 버튼 연결
-
 ========================
 */
 
@@ -130,96 +120,113 @@ function bindButtons(){
 
 
 
-    const buttons = {
+const buttons = {
 
 
-        parseBtn:
-        parseCurrent,
+parseBtn:
+parseCurrent,
 
 
-        cleanBtn:
-        cleanCurrent,
+cleanBtn:
+cleanCurrent,
 
 
-        copyBtn:
-        copyCurrentHTML,
+copyBtn:
+copyCurrentHTML,
 
 
-        backupBtn:
-        backupCurrent,
+backupBtn:
+backupCurrent,
 
 
-        txtBtn:
-        exportCurrentText,
+txtBtn:
+exportCurrentText,
 
 
-        pdfBtn:
-        savePDF,
+pdfBtn:
+savePDF,
 
 
-        deleteBtn:
-        deleteSelectedCharacters
+deleteBtn:
+deleteSelectedCharacters,
 
 
-
-    };
-
-
-
-
-
-    Object.keys(buttons)
-    .forEach(id=>{
-
-
-        const btn =
-        document.querySelector(
-        "#" + id
-        );
+applyTheme:
+applyCurrentTheme
 
 
 
-        if(btn){
-
-            btn.addEventListener(
-            "click",
-            buttons[id]
-            );
-
-        }
-
-
-    });
+};
 
 
 
 
 
-    const search =
-    document.querySelector(
-    "#searchInput"
-    );
+Object.keys(buttons)
+
+.forEach(id=>{
+
+
+const btn =
+document.querySelector(
+"#"+id
+);
 
 
 
-    if(search){
+if(btn){
 
 
-        search.addEventListener(
-        "input",
-        e=>{
+btn.addEventListener(
+"click",
+buttons[id]
+);
 
 
-            highlightSearch(
-            e.target.value
-            );
+}
 
 
-        });
+});
 
 
-    }
 
+
+
+
+/*
+검색
+
+*/
+
+
+const search =
+document.querySelector(
+"#searchInput"
+);
+
+
+
+if(search){
+
+
+search.addEventListener(
+
+"input",
+
+e=>{
+
+
+highlightSearch(
+e.target.value
+);
+
+
+}
+
+);
+
+
+}
 
 
 }
@@ -231,12 +238,9 @@ function bindButtons(){
 
 
 
-
 /*
 ========================
-
-로그 파싱
-
+로그 변환
 ========================
 */
 
@@ -245,26 +249,65 @@ function parseCurrent(){
 
 
 
-    const input =
-    document.querySelector(
-    "#logInput"
-    );
+const input =
+document.querySelector(
+"#logInput"
+);
 
 
 
-    if(!input.value)
-        return;
+if(!input.value)
+return;
 
 
 
-    currentData =
-    parseLog(
-        input.value
-    );
 
 
 
-    renderAll();
+let raw =
+input.value;
+
+
+
+
+
+/*
+HTML 분석
+
+*/
+
+
+let parsed =
+parseLog(
+raw
+);
+
+
+
+
+
+/*
+캐릭터 추출
+
+*/
+
+
+currentCharacters =
+extractCharacters(
+parsed
+);
+
+
+
+
+
+
+currentData =
+parsed;
+
+
+
+renderAll();
 
 
 }
@@ -276,13 +319,9 @@ function parseCurrent(){
 
 
 
-
-
 /*
 ========================
-
-정리 적용
-
+자동 정리
 ========================
 */
 
@@ -290,14 +329,34 @@ function parseCurrent(){
 function cleanCurrent(){
 
 
-    currentData =
-    cleanLog(
-        currentData
-    );
+
+currentData =
+cleanLog(
+currentData
+);
 
 
 
-    renderAll();
+
+currentData =
+formatLog(
+currentData
+);
+
+
+
+
+currentData =
+removeDuplicateLogs(
+currentData
+);
+
+
+
+
+
+renderAll();
+
 
 
 }
@@ -310,12 +369,9 @@ function cleanCurrent(){
 
 
 
-
 /*
 ========================
-
-전체 렌더링
-
+전체 출력
 ========================
 */
 
@@ -324,32 +380,53 @@ function renderAll(){
 
 
 
-    const preview =
-    document.querySelector(
-    "#preview"
-    );
-
-
-
-    renderLog(
-        currentData,
-        preview
-    );
+const preview =
+document.querySelector(
+"#preview"
+);
 
 
 
 
 
-    currentStats =
-    analyzeStats(
-        currentData
-    );
+if(preview){
+
+
+renderLog(
+
+currentData,
+
+preview
+
+);
+
+
+}
 
 
 
 
 
-    renderStatistics();
+
+
+renderCharacters();
+
+
+
+
+
+
+currentStats =
+analyzeStats(
+currentData
+);
+
+
+
+
+
+renderStatistics();
+
 
 
 }
@@ -362,11 +439,86 @@ function renderAll(){
 
 
 
+
 /*
 ========================
+캐릭터 출력
+========================
+*/
 
-통계 출력
 
+function renderCharacters(){
+
+
+
+const box =
+document.querySelector(
+"#characters"
+);
+
+
+
+if(!box)
+return;
+
+
+
+
+
+box.innerHTML="";
+
+
+
+
+
+currentCharacters.forEach(
+character=>{
+
+
+
+box.innerHTML += `
+
+<label class="character-item">
+
+
+<input
+
+type="checkbox"
+
+class="character-check"
+
+value="${character.name}"
+
+>
+
+
+${character.name}
+
+
+</label>
+
+`;
+
+
+
+});
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+/*
+========================
+통계
 ========================
 */
 
@@ -375,23 +527,25 @@ function renderStatistics(){
 
 
 
-    const box =
-    document.querySelector(
-    "#statistics"
-    );
+const box =
+document.querySelector(
+"#statistics"
+);
 
 
 
-    if(box){
+if(!box)
+return;
 
 
-        box.innerHTML =
-        renderStatsHTML(
-            currentStats
-        );
 
 
-    }
+
+box.innerHTML =
+renderStatsHTML(
+currentStats
+);
+
 
 
 }
@@ -404,12 +558,9 @@ function renderStatistics(){
 
 
 
-
 /*
 ========================
-
 파일 읽기
-
 ========================
 */
 
@@ -418,44 +569,56 @@ function loadFile(event){
 
 
 
-    const file =
-    event.target.files[0];
+const file =
+event.target.files[0];
 
 
 
-    if(!file)
-        return;
+if(!file)
+return;
 
 
 
-    const reader =
-    new FileReader();
+
+
+const reader =
+new FileReader();
 
 
 
-    reader.onload =
-    e=>{
 
 
-        document.querySelector(
-        "#logInput"
-        )
-        .value =
-        e.target.result;
+reader.onload =
+e=>{
 
 
 
-        parseCurrent();
+document.querySelector(
+"#logInput"
+)
+
+.value =
+e.target.result;
 
 
-    };
 
 
 
-    reader.readAsText(
-        file,
-        "UTF-8"
-    );
+parseCurrent();
+
+
+
+
+};
+
+
+
+
+
+reader.readAsText(
+file,
+"UTF-8"
+);
 
 
 }
@@ -470,9 +633,7 @@ function loadFile(event){
 
 /*
 ========================
-
 HTML 복사
-
 ========================
 */
 
@@ -481,9 +642,9 @@ function copyCurrentHTML(){
 
 
 
-    copyHTML(
-        currentData
-    );
+copyHTML(
+currentData
+);
 
 
 }
@@ -496,11 +657,10 @@ function copyCurrentHTML(){
 
 
 
+
 /*
 ========================
-
-백업
-
+JSON 백업
 ========================
 */
 
@@ -509,9 +669,9 @@ function backupCurrent(){
 
 
 
-    exportBackup(
-        currentData
-    );
+exportBackup(
+currentData
+);
 
 
 }
@@ -524,11 +684,10 @@ function backupCurrent(){
 
 
 
+
 /*
 ========================
-
-TXT
-
+TXT 저장
 ========================
 */
 
@@ -536,9 +695,10 @@ TXT
 function exportCurrentText(){
 
 
-    exportText(
-        currentData
-    );
+
+exportText(
+currentData
+);
 
 
 }
@@ -553,9 +713,7 @@ function exportCurrentText(){
 
 /*
 ========================
-
 캐릭터 삭제
-
 ========================
 */
 
@@ -564,52 +722,138 @@ function deleteSelectedCharacters(){
 
 
 
-    const checked =
-    document.querySelectorAll(
-    ".character-check:checked"
-    );
-
-
-
-    const remove =
-    Array.from(
-        checked
-    )
-    .map(
-        e=>e.value
-    );
+const checked =
+document.querySelectorAll(
+".character-check:checked"
+);
 
 
 
 
 
-    currentData =
-    currentData.filter(
-    item=>{
+const remove =
+Array.from(
+checked
+)
 
-
-        if(
-            item.type==="dialog"
-        ){
-
-
-            return !
-            remove.includes(
-                item.speaker
-            );
-
-
-        }
-
-
-        return true;
-
-
-    });
+.map(
+item=>item.value
+);
 
 
 
-    renderAll();
+
+
+
+currentData =
+
+currentData.filter(
+item=>{
+
+
+if(
+item.type==="dialog"
+){
+
+
+return !
+
+remove.includes(
+item.speaker
+);
+
+
+}
+
+
+return true;
+
+
+
+});
+
+
+
+
+
+
+currentCharacters =
+
+currentCharacters.filter(
+character=>
+
+!remove.includes(
+character.name
+)
+
+);
+
+
+
+
+
+
+renderAll();
+
+
+
+}
+
+
+
+
+
+
+
+
+
+/*
+========================
+테마 적용
+========================
+*/
+
+
+function applyCurrentTheme(){
+
+
+
+const theme = {
+
+
+background:
+
+document.querySelector(
+"#bgColor"
+).value,
+
+
+
+text:
+
+document.querySelector(
+"#textColor"
+).value,
+
+
+
+chat:
+
+document.querySelector(
+"#chatColor"
+).value
+
+
+};
+
+
+
+
+
+applyTheme(
+theme
+);
+
 
 
 }
