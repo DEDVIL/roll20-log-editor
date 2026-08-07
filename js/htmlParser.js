@@ -1,46 +1,180 @@
 /*
-=================================
-
 Roll20 HTML Parser
 
-롤꾸 보존용
-
+롤꾸 보존 + 데이터 추출
 =================================
 */
-
 
 
 function parseRoll20HTML(raw){
 
 
-    const characters =
-    extractCharactersFromHTML(raw);
+const container =
+document.createElement(
+"div"
+);
+
+
+container.innerHTML =
+raw;
 
 
 
-    applyExtractedCharacters(
-        characters
-    );
+// 보안 정리
+
+sanitizeHTML(
+container
+);
 
 
 
-    const container =
-    document.createElement("div");
+
+// 캐릭터 추출
+
+const characters =
+extractCharactersFromHTML(
+container
+);
 
 
 
-    container.innerHTML =
-    raw;
+
+// 메시지 추출
+
+const messages =
+extractMessages(
+container
+);
 
 
 
-    sanitizeHTML(
-        container
-    );
+
+return {
+
+
+characters,
+
+messages,
+
+
+html:
+container.innerHTML
+
+
+};
 
 
 
-    return container.innerHTML;
+}
+
+
+
+
+
+/*
+메시지 추출
+
+=================================
+*/
+
+
+function extractMessages(root){
+
+
+const result=[];
+
+
+
+const blocks =
+root.querySelectorAll(
+".message, .chat-message, div"
+);
+
+
+
+
+
+blocks.forEach(block=>{
+
+
+const text =
+block.innerText?.trim();
+
+
+
+if(!text)
+return;
+
+
+
+
+result.push({
+
+
+type:"dialog",
+
+
+speaker:
+findSpeaker(block),
+
+
+
+text,
+
+
+html:
+block.innerHTML
+
+
+
+});
+
+
+
+});
+
+
+
+
+
+return result;
+
+
+}
+
+
+
+
+
+
+
+
+/*
+작성자 찾기
+
+=================================
+*/
+
+
+function findSpeaker(block){
+
+
+const name =
+block.querySelector(
+".name, .sender, .player"
+);
+
+
+
+if(name)
+
+return name.innerText.trim();
+
+
+
+
+return "Unknown";
+
 
 }
 
@@ -53,12 +187,9 @@ function parseRoll20HTML(raw){
 
 
 /*
-=================================
-
 허용 태그 정리
 
 =================================
-
 */
 
 
@@ -66,73 +197,76 @@ function sanitizeHTML(root){
 
 
 
-    const allowed = [
+const allowed=[
 
 
-        "DIV",
+"DIV",
 
-        "SPAN",
+"SPAN",
 
-        "P",
+"P",
 
-        "BR",
+"BR",
 
-        "IMG",
+"IMG",
 
-        "STRONG",
+"STRONG",
 
-        "B",
+"B",
 
-        "I",
+"I",
 
-        "EM",
+"EM",
 
-        "U"
-
-
-    ];
+"U"
 
 
 
-
-
-    const all =
-    root.querySelectorAll("*");
+];
 
 
 
 
 
-    all.forEach(el=>{
+const all =
+root.querySelectorAll("*");
 
 
-        if(
-            !allowed.includes(
-                el.tagName
-            )
-        ){
 
 
-            el.replaceWith(
-                ...el.childNodes
-            );
+
+all.forEach(el=>{
 
 
-        }
+if(
+!allowed.includes(
+el.tagName
+)
+
+){
 
 
-        else{
+el.replaceWith(
+...el.childNodes
+);
 
 
-            cleanStyle(
-                el
-            );
+
+}
+
+else{
 
 
-        }
+cleanStyle(
+el
+);
 
 
-    });
+}
+
+
+
+});
 
 
 
@@ -145,14 +279,10 @@ function sanitizeHTML(root){
 
 
 
-
 /*
-=================================
-
 스타일 보존
 
 =================================
-
 */
 
 
@@ -160,139 +290,129 @@ function cleanStyle(el){
 
 
 
-    if(
-        !el.style
-    )
-        return;
+const keep=[
 
 
+"color",
 
-    const keep=[
+"background",
 
+"background-color",
 
-        "color",
+"font-size",
 
-        "background",
+"font-weight",
 
-        "background-color",
+"text-align",
 
-        "font-size",
+"border",
 
-        "font-weight",
+"border-radius",
 
-        "text-align",
+"padding",
 
-        "border",
+"margin"
 
-        "border-radius",
 
-        "padding",
 
-        "margin"
+];
 
 
 
-    ];
 
 
+const style =
+el.getAttribute(
+"style"
+);
 
 
 
-    const style =
-    el.getAttribute(
-        "style"
-    );
+if(!style)
+return;
 
 
 
-    if(!style)
-        return;
 
 
+const result=[];
 
 
 
-    const result=[];
 
 
+style
+.split(";")
+.forEach(rule=>{
 
-    style
-    .split(";")
-    .forEach(rule=>{
 
+const pair =
+rule.split(":");
 
-        const pair =
-        rule.split(":");
 
 
+if(pair.length!==2)
+return;
 
-        if(
-            pair.length!==2
-        )
-        return;
 
 
+const key =
+pair[0]
+.trim();
 
-        const key =
-        pair[0]
-        .trim();
 
 
+const value =
+pair[1]
+.trim();
 
-        const value =
-        pair[1]
-        .trim();
 
 
 
 
+if(
+keep.includes(key)
+){
 
-        if(
-            keep.includes(
-                key
-            )
-        ){
 
+result.push(
+`${key}:${value}`
+);
 
-            result.push(
-                `${key}:${value}`
-            );
 
+}
 
-        }
 
 
-    });
+});
 
 
 
 
 
-    if(
-        result.length
-    ){
+if(result.length){
 
 
-        el.setAttribute(
+el.setAttribute(
 
-            "style",
+"style",
 
-            result.join(";")
+result.join(";")
 
-        );
+);
 
 
-    }
+}
 
-    else{
+else{
 
 
-        el.removeAttribute(
-            "style"
-        );
+el.removeAttribute(
+"style"
+);
 
 
-    }
+}
 
 
 
