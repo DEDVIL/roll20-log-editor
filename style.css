@@ -8,10 +8,9 @@ Roll20 Log Viewer
 */
 
 
-/* =================================
-   Theme Variables
-================================= */
-
+/* =========================
+   Root Theme
+========================= */
 
 :root{
 
@@ -19,38 +18,34 @@ Roll20 Log Viewer
 
     --panel-color:#ffffff;
 
-    --chat-color:#ffffff;
-
-    --text-color:#222;
+    --text-color:#242424;
 
     --sub-text:#777;
 
+    --chat-color:#ffffff;
+
     --primary:#6c7ae0;
 
-    --primary-light:#eef0ff;
+    --primary-soft:#eef0ff;
 
     --danger:#e57373;
 
-    --border:#e7e7ee;
+    --border:#e5e7eb;
 
-    --radius:22px;
+    --radius:20px;
 
     --shadow:
-    0 10px 30px rgba(0,0,0,.06);
-
+    0 8px 25px rgba(0,0,0,.08);
 
     --max-width:1500px;
-
-    --sidebar-width:360px;
 
 }
 
 
 
-
-/* =================================
- Reset
-================================= */
+/* =========================
+   Reset
+========================= */
 
 
 *{
@@ -86,8 +81,8 @@ body{
 
     font-family:
 
-    "Pretendard",
     "Noto Sans KR",
+    "Pretendard",
     Arial,
     sans-serif;
 
@@ -98,12 +93,9 @@ body{
 
 
 
-
-
-
-/* =================================
+/* =========================
  Header
-================================= */
+========================= */
 
 
 .header{
@@ -120,26 +112,26 @@ body{
 }
 
 
+
 .header h1{
 
     margin:0;
 
+
     font-size:32px;
-
-    font-weight:900;
-
 
     letter-spacing:-1px;
 
 }
 
 
-.help{
+
+.header p{
+
+    margin-top:8px;
 
     color:
     var(--sub-text);
-
-    font-size:14px;
 
 }
 
@@ -147,13 +139,12 @@ body{
 
 
 
-/* =================================
+/* =========================
  Layout
-================================= */
+========================= */
 
 
 .app{
-
 
     max-width:
     var(--max-width);
@@ -167,11 +158,11 @@ body{
 
     grid-template-columns:
 
-    var(--sidebar-width)
-    1fr;
+    360px
+    minmax(0,1fr);
 
 
-    gap:30px;
+    gap:28px;
 
 
     align-items:start;
@@ -180,7 +171,16 @@ body{
 
 
 
-.sidebar,
+.sidebar{
+
+    position:sticky;
+
+    top:20px;
+
+}
+
+
+
 .main{
 
     min-width:0;
@@ -191,11 +191,9 @@ body{
 
 
 
-
-
-/* =================================
+/* =========================
  Panel
-================================= */
+========================= */
 
 
 .panel{
@@ -214,13 +212,14 @@ body{
     var(--radius);
 
 
-    padding:24px;
+    padding:22px;
 
 
     margin-bottom:22px;
 
 
     box-shadow:
+
     var(--shadow);
 
 }
@@ -228,7 +227,6 @@ body{
 
 
 .panel h2{
-
 
     margin:
 
@@ -240,35 +238,31 @@ body{
 
     font-weight:800;
 
-
 }
 
 
 
 
 
-
-/* =================================
- Textarea Input
-================================= */
+/* =========================
+ Text Input
+========================= */
 
 
 .log-input{
 
-
     width:100%;
 
 
-    min-height:260px;
+    min-height:
+
+    260px;
 
 
     resize:vertical;
 
 
-    padding:18px;
-
-
-    border-radius:18px;
+    padding:16px;
 
 
     border:
@@ -276,7 +270,10 @@ body{
     1px solid var(--border);
 
 
-    background:#fafaff;
+    border-radius:16px;
+
+
+    background:#fafafa;
 
 
     color:var(--text-color);
@@ -287,17 +284,15 @@ body{
 
     line-height:1.7;
 
-
-    outline:none;
-
-
-    transition:.2s;
-
 }
 
 
 
-.log-input:focus{
+.log-input:focus,
+
+input:focus{
+
+    outline:none;
 
 
     border-color:
@@ -307,7 +302,32 @@ body{
 
     box-shadow:
 
-    0 0 0 4px rgba(108,122,224,.12);
+    0 0 0 4px rgba(108,122,224,.15);
+
+}
+
+
+
+
+
+input[type="text"]{
+
+
+    width:100%;
+
+
+    padding:12px 14px;
+
+
+    border:
+
+    1px solid var(--border);
+
+
+    border-radius:12px;
+
+
+    background:white;
 
 
 }
@@ -316,30 +336,49 @@ body{
 
 
 
+.search{
 
-/* =================================
+    width:100%;
+
+}
+
+
+
+
+
+/* =========================
  Buttons
-================================= */
+========================= */
+
+
+.actions{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:10px;
+
+    margin-top:15px;
+
+}
+
 
 
 button{
 
 
-    width:100%;
+    border:none;
 
 
     padding:
 
-    13px 16px;
+    12px 18px;
 
 
-    margin-top:10px;
+    border-radius:
 
-
-    border:none;
-
-
-    border-radius:14px;
+    14px;
 
 
     background:
@@ -350,13 +389,10 @@ button{
     color:white;
 
 
-    font-weight:700;
-
-
-    font-size:14px;
-
-
     cursor:pointer;
+
+
+    font-weight:700;
 
 
     transition:.2s;
@@ -374,27 +410,13 @@ button:hover{
     translateY(-2px);
 
 
-    box-shadow:
-
-    0 8px 20px rgba(108,122,224,.25);
-
+    opacity:.9;
 
 }
-
-
-
-button:active{
-
-
-    transform:none;
-
-}
-
 
 
 
 button.danger{
-
 
     background:
 
@@ -404,36 +426,9 @@ button.danger{
 
 
 
+button:active{
 
-
-
-/* =================================
- Search
-================================= */
-
-
-.search{
-
-
-    width:100%;
-
-
-    padding:14px 16px;
-
-
-    border-radius:14px;
-
-
-    border:
-
-    1px solid var(--border);
-
-
-    background:#fafafa;
-
-
-    font-size:14px;
-
+    transform:none;
 
 }
 
@@ -441,10 +436,9 @@ button.danger{
 
 
 
-
-/* =================================
- Character List
-================================= */
+/* =========================
+ Character UI
+========================= */
 
 
 .character-list{
@@ -455,10 +449,14 @@ button.danger{
 
     grid-template-columns:
 
-    1fr;
+    repeat(
+    auto-fit,
+    minmax(250px,1fr)
+    );
 
 
     gap:15px;
+
 
 }
 
@@ -467,24 +465,9 @@ button.danger{
 .character-card{
 
 
-    display:flex;
-
-
-    gap:15px;
-
-
-    align-items:center;
-
-
-    padding:16px;
-
-
-    border-radius:18px;
-
-
     background:
 
-    #fafaff;
+    #fff;
 
 
     border:
@@ -492,27 +475,39 @@ button.danger{
     1px solid var(--border);
 
 
+    border-radius:
+
+    18px;
+
+
+    padding:15px;
+
+
 }
 
 
 
 
-.character-preview{
+
+.character-preview,
 
 
-    width:70px;
+.character-image{
 
 
-    height:70px;
+    width:65px;
 
 
-    border-radius:50%;
+    height:65px;
 
 
     object-fit:cover;
 
 
-    flex-shrink:0;
+    border-radius:50%;
+
+
+    background:#ddd;
 
 
 }
@@ -525,6 +520,8 @@ button.danger{
     font-weight:800;
 
 
+    font-size:16px;
+
 }
 
 
@@ -535,12 +532,9 @@ button.danger{
     display:inline-block;
 
 
-    margin-top:5px;
-
-
     padding:
 
-    3px 10px;
+    3px 12px;
 
 
     border-radius:999px;
@@ -548,7 +542,12 @@ button.danger{
 
     background:
 
-    var(--primary-light);
+    var(--primary-soft);
+
+
+    color:
+
+    var(--primary);
 
 
     font-size:12px;
@@ -560,13 +559,12 @@ button.danger{
 
 
 
+/* =========================
+ Theme
+========================= */
 
-/* =================================
- Theme Controls
-================================= */
 
-
-label{
+.theme-row{
 
 
     display:flex;
@@ -575,15 +573,29 @@ label{
     justify-content:space-between;
 
 
-    align-items:center;
+    gap:10px;
 
 
-    padding:
-
-    10px 0;
+    margin-bottom:15px;
 
 
-    color:var(--sub-text);
+}
+
+
+
+.theme-row label{
+
+
+    display:flex;
+
+
+    flex-direction:column;
+
+
+    gap:6px;
+
+
+    font-size:13px;
 
 
 }
@@ -593,16 +605,16 @@ label{
 input[type="color"]{
 
 
-    width:45px;
+    width:55px;
 
 
-    height:35px;
+    height:38px;
 
 
     border:none;
 
 
-    background:none;
+    padding:0;
 
 
     cursor:pointer;
@@ -614,10 +626,9 @@ input[type="color"]{
 
 
 
-
-/* =================================
+/* =========================
  Log Viewer
-================================= */
+========================= */
 
 
 .log-container{
@@ -629,7 +640,8 @@ input[type="color"]{
     flex-direction:column;
 
 
-    gap:20px;
+    gap:18px;
+
 
 }
 
@@ -637,10 +649,6 @@ input[type="color"]{
 
 
 
-
-/* =================================
- Message Card
-================================= */
 
 
 .message-card{
@@ -651,7 +659,8 @@ input[type="color"]{
 
     grid-template-columns:
 
-    70px 1fr;
+    70px
+    1fr;
 
 
     gap:18px;
@@ -665,12 +674,14 @@ input[type="color"]{
     var(--chat-color);
 
 
-    border-radius:24px;
+    border-radius:
+
+    22px;
 
 
-    border:
+    border-left:
 
-    1px solid var(--border);
+    6px solid var(--primary);
 
 
     box-shadow:
@@ -678,43 +689,46 @@ input[type="color"]{
     var(--shadow);
 
 
-    position:relative;
+    overflow:hidden;
+
+
+    animation:
+
+    fadeIn .25s ease;
 
 
 }
 
 
 
-.message-card::before{
 
 
-    content:"";
+@keyframes fadeIn{
 
 
-    position:absolute;
+from{
+
+opacity:0;
+
+transform:translateY(8px);
+
+}
 
 
-    left:0;
+to{
 
+opacity:1;
 
-    top:20px;
+transform:none;
 
-
-    bottom:20px;
-
-
-    width:5px;
-
-
-    border-radius:10px;
-
-
-    background:
-
-    var(--primary);
+}
 
 
 }
+
+
+
+
 
 
 
@@ -730,8 +744,6 @@ input[type="color"]{
 
 
 
-
-
 .message-card .character-image{
 
 
@@ -741,12 +753,6 @@ input[type="color"]{
     height:65px;
 
 
-    border-radius:50%;
-
-
-    object-fit:cover;
-
-
 }
 
 
@@ -754,10 +760,10 @@ input[type="color"]{
 .message-card .character-name{
 
 
-    font-size:16px;
-
-
     font-weight:900;
+
+
+    font-size:17px;
 
 
 }
@@ -766,10 +772,9 @@ input[type="color"]{
 
 
 
-
-/* =================================
- Roll20 Content
-================================= */
+/* =========================
+ Roll20 HTML
+========================= */
 
 
 .message-card img{
@@ -799,60 +804,47 @@ input[type="color"]{
 
 
 .message-card iframe,
+
 .message-card script,
+
 .message-card style{
 
 
     display:none!important;
 
-}
-
-
-
-
-.message-card{
-
-
-    overflow:hidden;
 
 }
 
 
 
+.message-card span,
+
+.message-card div{
+
+
+    max-width:100%;
+
+
+}
 
 
 
-/* =================================
+
+
+/* =========================
  Statistics
-================================= */
-
-
-#statistics{
-
-
-    display:grid;
-
-
-    gap:12px;
-
-
-}
-
+========================= */
 
 
 .stat-box,
+
+
 .character-item{
-
-
-    padding:18px;
 
 
     background:
 
-    #fafaff;
-
-
-    border-radius:18px;
+    #fafafa;
 
 
     border:
@@ -860,16 +852,30 @@ input[type="color"]{
     1px solid var(--border);
 
 
+    border-radius:
+
+    16px;
+
+
+    padding:
+
+    15px;
+
+
+    margin-bottom:
+
+    12px;
+
+
 }
 
 
 
 
 
-
-/* =================================
+/* =========================
  Mobile
-================================= */
+========================= */
 
 
 @media(max-width:1000px){
@@ -877,8 +883,7 @@ input[type="color"]{
 
 body{
 
-
-    padding:15px;
+padding:15px;
 
 }
 
@@ -887,9 +892,9 @@ body{
 .app{
 
 
-    grid-template-columns:
+grid-template-columns:
 
-    1fr;
+1fr;
 
 
 }
@@ -899,7 +904,10 @@ body{
 .sidebar{
 
 
-    order:2;
+position:static;
+
+
+order:2;
 
 
 }
@@ -909,7 +917,7 @@ body{
 .main{
 
 
-    order:1;
+order:1;
 
 
 }
@@ -919,19 +927,19 @@ body{
 .character-list{
 
 
-    grid-template-columns:
+grid-template-columns:
 
-    repeat(
-        2,
-        1fr
-    );
-
-
-}
+repeat(
+auto-fit,
+minmax(220px,1fr)
+);
 
 
 }
 
+
+
+}
 
 
 
@@ -940,12 +948,9 @@ body{
 @media(max-width:600px){
 
 
-
 .header h1{
 
-
-    font-size:26px;
-
+font-size:24px;
 
 }
 
@@ -953,21 +958,7 @@ body{
 
 .panel{
 
-
-    padding:18px;
-
-
-}
-
-
-
-.character-list{
-
-
-    grid-template-columns:
-
-    1fr;
-
+padding:16px;
 
 }
 
@@ -976,10 +967,7 @@ body{
 .message-card{
 
 
-    display:block;
-
-
-    padding:18px;
+display:block;
 
 
 }
@@ -989,7 +977,17 @@ body{
 .message-card .character-image{
 
 
-    margin-bottom:12px;
+margin-bottom:10px;
+
+
+}
+
+
+
+.theme-row{
+
+
+flex-wrap:wrap;
 
 
 }
@@ -999,7 +997,7 @@ body{
 button{
 
 
-    padding:15px;
+width:100%;
 
 
 }
@@ -1012,9 +1010,9 @@ button{
 
 
 
-/* =================================
+/* =========================
  Dark Mode
-================================= */
+========================= */
 
 
 @media(prefers-color-scheme:dark){
@@ -1023,22 +1021,15 @@ button{
 :root{
 
 
-    --bg-color:#11131a;
+--bg-color:#111827;
 
+--panel-color:#1f2937;
 
-    --panel-color:#181b24;
+--text-color:#f3f4f6;
 
+--border:#374151;
 
-    --chat-color:#202430;
-
-
-    --text-color:#eeeeee;
-
-
-    --sub-text:#aaa;
-
-
-    --border:#303544;
+--chat-color:#202938;
 
 
 }
@@ -1046,13 +1037,14 @@ button{
 
 
 .log-input,
-.search{
+
+input[type="text"]{
 
 
-    background:#202430;
+background:#111827;
 
 
-    color:white;
+color:white;
 
 
 }
@@ -1060,14 +1052,17 @@ button{
 
 
 .character-card,
+
 .stat-box,
+
 .character-item{
 
 
-    background:#202430;
+background:#111827;
 
 
 }
+
 
 
 }
