@@ -9,64 +9,51 @@ Roll20 Archive Renderer
 */
 
 
-function renderAll(){
+function renderLog(data, preview){
 
 
-    const preview =
-    document.querySelector(
-        "#preview"
-    );
-
-
-    if(!preview)
-        return;
+if(!preview)
+return;
 
 
 
-    if(
-        !window.currentData
-        ||
-        currentData.length===0
-    ){
+if(
+!data ||
+data.length===0
+){
 
-        preview.innerHTML =
-        `
-        <div class="empty">
-        로그를 입력해주세요.
-        </div>
-        `;
+preview.innerHTML=
+`
+<div class="empty">
+로그를 입력해주세요.
+</div>
+`;
 
-
-        return;
-
-    }
-
-
-
-    let html="";
-
-
-
-    currentData.forEach(item=>{
-
-
-        html += renderMessage(item);
-
-
-    });
-
-
-
-    preview.innerHTML =
-    html;
-
-
+return;
 
 }
 
 
 
+let html="";
 
+
+
+data.forEach(item=>{
+
+
+html += renderMessage(item);
+
+
+});
+
+
+
+preview.innerHTML =
+html;
+
+
+}
 
 
 
@@ -245,8 +232,16 @@ ${character.role}
 
 ${
 
+item.html
+
+?
+
+item.html
+
+:
+
 formatRoll20HTML(
-    item.text
+item.text
 )
 
 }
