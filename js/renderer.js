@@ -1,66 +1,65 @@
 /*
-Roll20 Archive Renderer
+TRPG Log Studio
 
-동적 캐릭터 지원
+Renderer Module
+
+Roll20 Archive UI Renderer
 
 =================================
 */
 
 
+/*
+로그 전체 출력
+=================================
+*/
+
 function renderLog(data, preview){
 
 
-if(!preview)
-return;
+    if(!preview)
+        return;
 
 
 
-if(
-!data ||
-data.length===0
-){
+    if(
+        !Array.isArray(data)
+        ||
+        data.length===0
+    ){
 
+        preview.innerHTML = `
+            <div class="empty-state">
+                로그를 입력해주세요.
+            </div>
+        `;
 
-preview.innerHTML =
-`
-<div class="empty">
-로그를 입력해주세요.
-</div>
-`;
+        return;
 
-return;
-
-
-}
-
-
-
-let html="";
+    }
 
 
 
-data.forEach(item=>{
-
-
-html +=
-renderMessage(item);
+    let html = "";
 
 
 
-});
+    data.forEach(item=>{
+
+
+        html +=
+        renderMessage(item);
+
+
+    });
 
 
 
-preview.innerHTML =
-html;
+    preview.innerHTML = html;
 
 
 
 }
-
-
-
-
 
 
 
@@ -77,173 +76,180 @@ function renderMessage(item){
 
 
 
-if(
+    /*
+    시스템 메시지
 
-item.type==="system"
+    주사위
+    설명문
+    핸드아웃
 
-||
+    */
 
-!item.speaker
-
-){
-
-
-return `
-
-<div class="system-message">
-
-${
-item.html
-?
-item.html
-:
-formatRoll20HTML(item.text)
-}
-
-</div>
-
-`;
+    if(
+        item.type==="system"
+        ||
+        !item.speaker
+    ){
 
 
+        return `
 
-}
-
-
-
+        <div class="system-message">
 
 
+            ${
+                item.html
+                ?
+                item.html
+                :
+                formatRoll20HTML(
+                    item.text
+                )
+            }
 
-const character =
-getCharacter(
-item.speaker
-);
+
+        </div>
+
+        `;
+
+
+    }
 
 
 
 
 
-
-const image =
-
-character.image
-&&
-character.image.startsWith("http")
-
-?
-
-character.image
-
-:
-
-"images/default-avatar.png";
+    const character =
+    getCharacter(
+        item.speaker
+    );
 
 
 
 
+    const image =
+
+    isRendererImage(
+        character.image
+    )
+
+    ?
+
+    character.image
+
+    :
+
+    "images/default-avatar.png";
 
 
-return `
+
+
+
+    return `
 
 
 <div
 
 class="message-card"
 
-data-character="${item.speaker}"
+data-character="${escapeRendererHTML(item.speaker)}"
+
+style="border-left-color:${character.color}"
 
 >
 
 
 
+    <div class="message-avatar">
 
 
-<img
+        <img
 
-class="character-image"
+        class="character-image"
 
-src="${image}"
+        src="${image}"
 
-onerror="
-this.src='images/default-avatar.png'
-"
+        onerror="
+        this.src='images/default-avatar.png'
+        "
 
->
-
-
+        >
 
 
-
-<div
-
-class="message-header"
-
->
+    </div>
 
 
 
 
 
-<span
-
-class="character-name"
-
-style="color:${character.color}"
-
->
-
-${escapeRendererHTML(item.speaker)}
-
-</span>
+    <div class="message-content">
 
 
 
+        <div class="message-header">
 
 
-<span
+            <span
 
-class="character-role"
+            class="character-name"
 
->
+            style="
+            color:${character.color}
+            "
 
-${character.role}
+            >
 
-</span>
+            ${escapeRendererHTML(
+                item.speaker
+            )}
+
+            </span>
 
 
 
 
 
-</div>
+            <span
+
+            class="character-role"
+
+            >
+
+            ${escapeRendererHTML(
+                character.role
+            )}
+
+            </span>
+
+
+
+        </div>
 
 
 
 
 
+        <div class="message-body">
 
-<div
 
-class="message-body"
+            ${
+                item.html
+                ?
+                sanitizeRenderHTML(
+                    item.html
+                )
+                :
+                formatRoll20HTML(
+                    item.text
+                )
+            }
 
->
 
-${
-
-item.html
-
-?
-
-item.html
-
-:
-
-formatRoll20HTML(item.text)
-
-}
+        </div>
 
 
 
-</div>
-
+    </div>
 
 
 
@@ -261,14 +267,8 @@ formatRoll20HTML(item.text)
 
 
 
-
-
-
-
 /*
-텍스트 출력
-
-일반 텍스트용
+일반 텍스트 출력
 
 =================================
 */
@@ -277,24 +277,21 @@ formatRoll20HTML(item.text)
 function formatRoll20HTML(text){
 
 
-if(!text)
-return "";
+    if(!text)
+        return "";
 
 
 
-return escapeRendererHTML(text)
-
-.replace(
-/\n/g,
-"<br>"
-);
-
+    return escapeRendererHTML(
+        text
+    )
+    .replace(
+        /\n/g,
+        "<br>"
+    );
 
 
 }
-
-
-
 
 
 
@@ -311,50 +308,51 @@ return escapeRendererHTML(text)
 function searchMessages(keyword){
 
 
-keyword =
-keyword.trim();
+    keyword =
+    keyword.trim();
 
 
 
-const cards =
-document.querySelectorAll(
-".message-card"
-);
+    const cards =
+    document.querySelectorAll(
+        ".message-card"
+    );
 
 
 
-cards.forEach(card=>{
+    cards.forEach(card=>{
 
 
-if(
-!keyword
-||
-card.innerText.includes(keyword)
-){
+        if(
+            !keyword
+            ||
+            card.innerText.includes(
+                keyword
+            )
+        ){
 
 
-card.style.display="";
+            card.style.display =
+            "";
+
+
+        }
+
+        else{
+
+
+            card.style.display =
+            "none";
+
+
+        }
+
+
+    });
+
+
 
 }
-
-else{
-
-
-card.style.display="none";
-
-
-}
-
-
-
-});
-
-
-}
-
-
-
-
 
 
 
@@ -370,43 +368,144 @@ card.style.display="none";
 function filterCharacter(name){
 
 
-const cards =
-document.querySelectorAll(
-".message-card"
-);
+
+    const cards =
+    document.querySelectorAll(
+        ".message-card"
+    );
 
 
 
-cards.forEach(card=>{
+    cards.forEach(card=>{
 
 
-if(
-card.dataset.character === name
+        if(
+            card.dataset.character
+            ===
+            name
+        ){
 
-){
+            card.style.display="";
 
 
-card.style.display="";
+        }
+
+        else{
+
+
+            card.style.display="none";
+
+
+        }
+
+
+
+    });
+
 
 
 }
 
-else{
 
 
-card.style.display="none";
+
+
+/*
+이미지 검사
+
+=================================
+*/
+
+
+function isRendererImage(url){
+
+
+    if(!url)
+        return false;
+
+
+
+    return /^https?:\/\//i.test(url);
 
 
 }
 
 
 
-});
+
+
+
+/*
+Roll20 HTML 최소 보호
+
+htmlParser에서 이미 한번 처리하지만
+
+렌더링 단계에서도 보호
+
+=================================
+*/
+
+
+function sanitizeRenderHTML(html){
+
+
+    if(!html)
+        return "";
+
+
+
+    const temp =
+    document.createElement(
+        "div"
+    );
+
+
+    temp.innerHTML =
+    html;
+
+
+
+
+    const banned = [
+
+        "SCRIPT",
+
+        "IFRAME",
+
+        "OBJECT",
+
+        "STYLE"
+
+    ];
+
+
+
+
+    temp.querySelectorAll("*")
+    .forEach(el=>{
+
+
+        if(
+            banned.includes(
+                el.tagName
+            )
+        ){
+
+            el.remove();
+
+
+        }
+
+
+    });
+
+
+
+    return temp.innerHTML;
+
 
 
 }
-
-
 
 
 
@@ -415,7 +514,7 @@ card.style.display="none";
 
 
 /*
-HTML 보호
+HTML Escape
 
 =================================
 */
@@ -424,38 +523,35 @@ HTML 보호
 function escapeRendererHTML(text){
 
 
-return String(text)
 
+    return String(
+        text || ""
+    )
 
-.replace(
-/&/g,
-"&amp;"
-)
+    .replace(
+        /&/g,
+        "&amp;"
+    )
 
+    .replace(
+        /</g,
+        "&lt;"
+    )
 
-.replace(
-/</g,
-"&lt;"
-)
+    .replace(
+        />/g,
+        "&gt;"
+    )
 
+    .replace(
+        /"/g,
+        "&quot;"
+    )
 
-.replace(
-/>/g,
-"&gt;"
-)
-
-
-.replace(
-/"/g,
-"&quot;"
-)
-
-
-.replace(
-/'/g,
-"&#039;"
-);
-
+    .replace(
+        /'/g,
+        "&#039;"
+    );
 
 
 }
