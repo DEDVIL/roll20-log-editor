@@ -6,6 +6,7 @@ Character Manager
 동적 캐릭터 관리 시스템
 
 기능:
+
 - 로그 기반 자동 생성
 - 캐릭터 이미지 관리
 - PC/KPC/NPC 구분
@@ -17,6 +18,8 @@ Character Manager
 
 
 let characters = {};
+
+
 
 
 
@@ -37,16 +40,49 @@ function registerExtractedCharacters(data){
 
 
 
-if(!Array.isArray(data))
+if(!data)
 return;
+
+
+
+
+
+/*
+객체 반환 대응
+
+{
+ 이름:{
+  name,
+  image
+ }
+}
+
+*/
+
+
+if(!Array.isArray(data)){
+
+
+data =
+Object.values(data);
+
+
+}
+
+
+
 
 
 
 data.forEach(char=>{
 
 
-if(!char.name)
+if(
+!char ||
+!char.name
+)
 return;
+
 
 
 
@@ -58,7 +94,11 @@ char.name.trim();
 
 
 
-if(!characters[name]){
+
+if(
+!characters[name]
+){
+
 
 
 characters[name]={
@@ -81,6 +121,7 @@ createColor()
 
 
 };
+
 
 
 }
@@ -108,6 +149,7 @@ char.image;
 
 
 
+
 renderCharacterUI();
 
 
@@ -127,7 +169,7 @@ renderCharacterUI();
 
 메시지 기반 캐릭터 등록
 
-백업 데이터 호환용
+백업 데이터 호환
 
 =================================
 */
@@ -139,6 +181,8 @@ function registerCharacters(data){
 
 if(!Array.isArray(data))
 return;
+
+
 
 
 
@@ -160,7 +204,10 @@ item.speaker.trim();
 
 
 
-if(!characters[name]){
+
+if(
+!characters[name]
+){
 
 
 characters[name]={
@@ -183,6 +230,7 @@ createColor()
 };
 
 
+
 }
 
 
@@ -192,6 +240,7 @@ createColor()
 
 
 });
+
 
 
 
@@ -210,13 +259,10 @@ renderCharacterUI();
 
 
 
-
 /*
 =================================
 
 새 로그 시작
-
-캐릭터 초기화
 
 =================================
 */
@@ -235,7 +281,6 @@ renderCharacterUI();
 
 
 }
-
 
 
 
@@ -265,7 +310,6 @@ document.querySelector(
 
 
 
-
 if(!box)
 return;
 
@@ -285,47 +329,54 @@ Object.values(characters)
 
 
 
+const image =
+
+character.image &&
+character.image.startsWith("http")
+
+?
+
+character.image
+
+:
+
+"images/default-avatar.png";
+
+
+
+
+
 box.innerHTML += `
+
 
 <div class="character-card">
 
 
-<div class="character-header">
-
 
 <img
 
-src="${character.image || "images/default-avatar.png"}"
+src="${image}"
 
 class="character-preview"
 
-onerror="
-this.src='images/default-avatar.png'
-"
+onerror="this.src='images/default-avatar.png'"
 
 >
 
 
 
-<strong>
+<div class="character-name">
 
 ${escapeHTML(character.name)}
-
-</strong>
-
 
 </div>
 
 
 
 
-<div class="character-option">
-
-
 <label>
 
 선택
-
 
 <input
 
@@ -337,25 +388,15 @@ value="${escapeAttribute(character.name)}"
 
 >
 
-
 </label>
 
 
-</div>
 
-
-
-
-
-<div class="character-option">
 
 
 <label>
 
 이미지 URL
-
-</label>
-
 
 <input
 
@@ -366,40 +407,40 @@ value="${escapeAttribute(character.image)}"
 placeholder="Roll20 이미지 링크"
 
 onchange="
+
 changeCharacterImage(
+
 '${escapeQuote(character.name)}',
+
 this.value
+
 )
 
 "
 
 >
 
-
-</div>
-
+</label>
 
 
 
-
-
-<div class="character-option">
 
 
 <label>
 
 역할
 
-</label>
-
-
 
 <select
 
 onchange="
+
 changeCharacterRole(
+
 '${escapeQuote(character.name)}',
+
 this.value
+
 )
 
 "
@@ -407,11 +448,21 @@ this.value
 >
 
 
-<option
+<option value="PC"
 
-value="PC"
+${
 
-${character.role==="PC" ? "selected":""}
+character.role==="PC"
+
+?
+
+"selected"
+
+:
+
+""
+
+}
 
 >
 
@@ -420,11 +471,22 @@ PC
 </option>
 
 
-<option
 
-value="KPC"
+<option value="KPC"
 
-${character.role==="KPC" ? "selected":""}
+${
+
+character.role==="KPC"
+
+?
+
+"selected"
+
+:
+
+""
+
+}
 
 >
 
@@ -433,11 +495,23 @@ KPC
 </option>
 
 
-<option
 
-value="NPC"
 
-${character.role==="NPC" ? "selected":""}
+<option value="NPC"
+
+${
+
+character.role==="NPC"
+
+?
+
+"selected"
+
+:
+
+""
+
+}
 
 >
 
@@ -449,24 +523,17 @@ NPC
 
 </select>
 
-
-
-</div>
-
+</label>
 
 
 
 
 
-<div class="character-option">
 
 
 <label>
 
 색상
-
-</label>
-
 
 
 <input
@@ -476,9 +543,13 @@ type="color"
 value="${character.color}"
 
 onchange="
+
 changeCharacterColor(
+
 '${escapeQuote(character.name)}',
+
 this.value
+
 )
 
 "
@@ -486,11 +557,13 @@ this.value
 >
 
 
-</div>
+</label>
 
 
 
 </div>
+
+
 
 `;
 
@@ -532,8 +605,10 @@ return;
 
 
 
+
 characters[name].image =
 url.trim();
+
 
 
 
@@ -574,14 +649,13 @@ return;
 
 
 
+
 characters[name].role =
 role;
 
 
 
-
 }
-
 
 
 
@@ -613,9 +687,9 @@ return;
 
 
 
+
 characters[name].color =
 color;
-
 
 
 
@@ -650,6 +724,7 @@ return;
 
 
 
+
 names.forEach(name=>{
 
 
@@ -657,6 +732,7 @@ delete characters[name];
 
 
 });
+
 
 
 
@@ -698,13 +774,18 @@ characters[name]
 
 {
 
+
 name:name,
+
 
 image:"",
 
+
 role:"NPC",
 
+
 color:"#999999"
+
 
 }
 
@@ -713,7 +794,6 @@ color:"#999999"
 
 
 }
-
 
 
 
@@ -779,8 +859,8 @@ const colors=[
 "#4DB6AC"
 
 
-
 ];
+
 
 
 
@@ -820,27 +900,32 @@ function escapeHTML(text){
 
 
 
-return String(text)
+return String(text || "")
+
 
 .replace(
 /&/g,
 "&amp;"
 )
 
+
 .replace(
 /</g,
 "&lt;"
 )
+
 
 .replace(
 />/g,
 "&gt;"
 )
 
+
 .replace(
 /"/g,
 "&quot;"
 )
+
 
 .replace(
 /'/g,
@@ -858,8 +943,17 @@ return String(text)
 
 
 
-function escapeAttribute(text){
 
+/*
+=================================
+
+HTML 속성 보호
+
+=================================
+*/
+
+
+function escapeAttribute(text){
 
 
 return escapeHTML(
@@ -878,11 +972,25 @@ text || ""
 
 
 
+/*
+=================================
+
+JS 문자열 보호
+
+=================================
+*/
+
+
 function escapeQuote(text){
 
 
 
-return String(text)
+return String(text || "")
+
+.replace(
+/\\/g,
+"\\\\"
+)
 
 .replace(
 /'/g,
