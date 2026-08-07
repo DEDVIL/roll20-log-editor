@@ -10,185 +10,243 @@ Chat Parser
 function parseLog(raw){
 
 
-    if(!raw)
-        return [];
+if(!raw)
+return {
 
+characters:[],
+messages:[]
+};
 
 
 
-    /*
-    HTML 로그
-    */
 
 
-    if(
-        /<[^>]+>/.test(raw)
-    ){
 
+/*
+HTML 로그 감지
 
-        const parsed =
-        parseRoll20HTML(raw);
+*/
 
 
+if(
+/<[^>]+>/.test(raw)
+){
 
-        if(
-            parsed &&
-            parsed.messages
-        ){
 
-            return parsed.messages;
+const parsed =
+parseRoll20HTML(raw);
 
-        }
 
 
-    }
+if(parsed){
 
 
+return {
 
+characters:
+parsed.characters || [],
 
 
+messages:
+parsed.messages || [],
 
 
-    /*
-    일반 텍스트 로그
-    */
+html:
+parsed.html || ""
 
 
-    raw =
-    normalizeInput(raw);
+};
 
 
-
-    const lines =
-    raw.split(/\r?\n/);
-
-
-
-
-    const result=[];
-
-
-    let current=null;
-
-
-
-
-
-    lines.forEach(line=>{
-
-
-        line =
-        line.trim();
-
-
-
-        if(
-            !line
-        )
-            return;
-
-
-
-
-
-        const match =
-        line.match(
-            /^(.+?)\s*:\s*(.*)$/
-        );
-
-
-
-
-
-        if(match){
-
-
-            const speaker =
-            cleanName(
-                match[1]
-            );
-
-
-
-            const text =
-            match[2];
-
-
-
-
-            current={
-
-
-                type:"dialog",
-
-
-                speaker,
-
-
-                text,
-
-
-                html:""
-
-
-            };
-
-
-
-            result.push(
-                current
-            );
-
-
-        }
-
-        else{
-
-
-            if(current){
-
-
-                current.text +=
-                "\n"
-                +
-                line;
-
-
-            }
-
-            else{
-
-
-                result.push({
-
-                    type:"system",
-
-                    speaker:"",
-
-                    text:line,
-
-                    html:""
-
-                });
-
-
-            }
-
-
-        }
-
-
-    });
-
-
-
-
-
-    return result;
+}
 
 
 
 }
+
+
+
+
+
+
+
+
+/*
+일반 텍스트 로그
+
+*/
+
+
+raw =
+normalizeInput(raw);
+
+
+
+
+const lines =
+raw.split(/\r?\n/);
+
+
+
+
+const result=[];
+
+
+let current=null;
+
+
+
+
+
+lines.forEach(line=>{
+
+
+line =
+line.trim();
+
+
+
+if(!line)
+return;
+
+
+
+
+
+
+/*
+이름: 대사
+
+*/
+
+
+const match =
+line.match(
+/^(.+?)\s*:\s*(.*)$/
+);
+
+
+
+
+
+
+if(match){
+
+
+
+const speaker =
+cleanName(
+match[1]
+);
+
+
+
+const text =
+match[2];
+
+
+
+
+current={
+
+
+type:"dialog",
+
+
+speaker,
+
+
+text,
+
+
+html:""
+
+
+};
+
+
+
+
+result.push(
+current
+);
+
+
+
+}
+
+
+
+else{
+
+
+
+/*
+이전 대사 이어쓰기
+
+*/
+
+
+if(current){
+
+
+current.text +=
+"\n"
++
+line;
+
+
+}
+
+else{
+
+
+result.push({
+
+type:"system",
+
+speaker:"",
+
+text:line,
+
+html:""
+
+});
+
+
+}
+
+
+}
+
+
+
+});
+
+
+
+
+
+
+
+return {
+
+
+characters:extractCharactersFromMessages(result),
+
+
+messages:result,
+
+
+html:""
+
+
+};
+
+
+
+}
+
 
 
 
@@ -207,23 +265,24 @@ HTML → 텍스트
 function convertHTMLToText(html){
 
 
-    const temp =
-    document.createElement(
-        "div"
-    );
+const temp =
+document.createElement(
+"div"
+);
 
 
 
-    temp.innerHTML =
-    html;
+temp.innerHTML =
+html;
 
 
 
-    return temp.innerText;
+return temp.innerText;
 
 
 
 }
+
 
 
 
@@ -235,9 +294,6 @@ function convertHTMLToText(html){
 /*
 입력 정리
 
-HTML 보호 때문에
-최소 처리
-
 =================================
 */
 
@@ -245,21 +301,23 @@ HTML 보호 때문에
 function normalizeInput(text){
 
 
-    return text
+return text
 
-    .replace(
-        /\r/g,
-        ""
-    )
+.replace(
+/\r/g,
+""
+)
 
 
-    .replace(
-        /\n{3,}/g,
-        "\n\n"
-    );
+.replace(
+/\n{3,}/g,
+"\n\n"
+);
+
 
 
 }
+
 
 
 
@@ -278,15 +336,89 @@ function normalizeInput(text){
 function cleanName(name){
 
 
-    return name
+return name
 
-    .replace(
-        /\s+/g,
-        " "
-    )
+.replace(
+/\s+/g,
+" "
+)
+
+.trim();
 
 
-    .trim();
+
+}
+
+
+
+
+
+
+
+
+
+/*
+텍스트 로그 캐릭터 추출
+
+=================================
+*/
+
+
+function extractCharactersFromMessages(data){
+
+
+
+const chars={};
+
+
+
+data.forEach(item=>{
+
+
+if(
+
+item.type==="dialog"
+
+&&
+
+item.speaker
+
+){
+
+
+
+if(!chars[item.speaker]){
+
+
+chars[item.speaker]={
+
+
+name:item.speaker,
+
+
+image:""
+
+
+
+};
+
+
+
+}
+
+
+
+}
+
+
+
+});
+
+
+
+
+return Object.values(chars);
+
 
 
 }
