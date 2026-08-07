@@ -2,6 +2,7 @@
 Roll20 HTML Parser
 
 롤꾸 보존 + 데이터 추출
+
 =================================
 */
 
@@ -20,7 +21,6 @@ raw;
 
 
 
-// 보안 정리
 
 sanitizeHTML(
 container
@@ -29,8 +29,6 @@ container
 
 
 
-// 캐릭터 추출
-
 const characters =
 extractCharactersFromHTML(
 container
@@ -38,8 +36,6 @@ container
 
 
 
-
-// 메시지 추출
 
 const messages =
 extractMessages(
@@ -56,7 +52,6 @@ characters,
 
 messages,
 
-
 html:
 container.innerHTML
 
@@ -64,8 +59,10 @@ container.innerHTML
 };
 
 
-
 }
+
+
+
 
 
 
@@ -87,7 +84,7 @@ const result=[];
 
 const blocks =
 root.querySelectorAll(
-".message, .chat-message, div"
+".message, .chat-message"
 );
 
 
@@ -108,21 +105,39 @@ return;
 
 
 
+const speaker =
+findSpeaker(block);
+
+
+
+
 result.push({
 
 
-type:"dialog",
+type:
+speaker
+?
+"dialog"
+:
+"system",
+
 
 
 speaker:
-findSpeaker(block),
+speaker,
+
+
+
+text:
 
 
 
 text,
 
 
+
 html:
+
 block.innerHTML
 
 
@@ -136,11 +151,11 @@ block.innerHTML
 
 
 
-
 return result;
 
 
 }
+
 
 
 
@@ -166,14 +181,19 @@ block.querySelector(
 
 
 
-if(name)
+
+if(name){
+
 
 return name.innerText.trim();
 
 
+}
 
 
-return "Unknown";
+
+return "";
+
 
 
 }
@@ -238,6 +258,7 @@ root.querySelectorAll("*");
 all.forEach(el=>{
 
 
+
 if(
 !allowed.includes(
 el.tagName
@@ -251,7 +272,6 @@ el.replaceWith(
 );
 
 
-
 }
 
 else{
@@ -260,6 +280,43 @@ else{
 cleanStyle(
 el
 );
+
+
+
+}
+
+
+
+
+if(
+el.tagName==="IMG"
+){
+
+
+
+const src =
+el.getAttribute(
+"src"
+);
+
+
+
+if(
+!src
+||
+src.startsWith(
+"javascript:"
+)
+
+){
+
+
+el.remove();
+
+
+
+}
+
 
 
 }
@@ -279,6 +336,7 @@ el
 
 
 
+
 /*
 스타일 보존
 
@@ -287,7 +345,6 @@ el
 
 
 function cleanStyle(el){
-
 
 
 const keep=[
@@ -312,7 +369,6 @@ const keep=[
 "padding",
 
 "margin"
-
 
 
 ];
@@ -346,13 +402,17 @@ style
 .forEach(rule=>{
 
 
+
 const pair =
 rule.split(":");
 
 
 
-if(pair.length!==2)
+if(
+pair.length!==2
+)
 return;
+
 
 
 
@@ -384,7 +444,10 @@ result.push(
 
 
 
+
 });
+
+
 
 
 
