@@ -11,7 +11,6 @@ let currentData = [];
 
 let currentStats = {};
 
-let currentCharacters = [];
 
 
 
@@ -283,13 +282,13 @@ raw
 );
 
 
-currentCharacters =
-parsed.characters;
+registerExtractedCharacters(
+parsed.characters
+);
 
 
 currentData =
 parsed.messages;
-
 
 
 renderAll();
