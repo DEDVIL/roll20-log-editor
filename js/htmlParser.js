@@ -13,11 +13,19 @@ Roll20 HTML Parser
 function parseRoll20HTML(raw){
 
 
+    const characters =
+    extractCharactersFromHTML(raw);
+
+
+
+    applyExtractedCharacters(
+        characters
+    );
+
+
 
     const container =
-    document.createElement(
-        "div"
-    );
+    document.createElement("div");
 
 
 
@@ -33,7 +41,6 @@ function parseRoll20HTML(raw){
 
 
     return container.innerHTML;
-
 
 }
 
