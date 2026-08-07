@@ -25,16 +25,14 @@ Roll20 Chat Archive
 
 <header class="top">
 
-
 <h1>
 Roll20 Chat Archive
 </h1>
 
 
 <p>
-TRPG 로그 정리 · 롤꾸 보존 · PDF / 티스토리 변환
+Roll20 로그 정리 · 롤꾸 보존 · PDF / 티스토리 변환
 </p>
-
 
 </header>
 
@@ -42,22 +40,22 @@ TRPG 로그 정리 · 롤꾸 보존 · PDF / 티스토리 변환
 
 
 
-<div class="layout">
+<main class="layout">
 
 
 
 
 
-<!-- ==================
-     입력 영역
-================== -->
+<!-- =====================
+ 입력 패널
+===================== -->
 
 
-<section class="input-area">
+<section class="input-area panel">
 
 
 <h2>
-로그 입력
+📂 로그 입력
 </h2>
 
 
@@ -67,15 +65,21 @@ TRPG 로그 정리 · 롤꾸 보존 · PDF / 티스토리 변환
 
 <label for="fileInput">
 
-📂 로그 파일 업로드
+파일 불러오기
 
 </label>
 
 
 <input
+
 type="file"
+
 id="fileInput"
+
+accept=".txt,.html,.htm"
+
 hidden
+
 >
 
 
@@ -85,11 +89,17 @@ hidden
 
 
 
+
 <textarea
+
 id="logInput"
+
 placeholder="
-Roll20 채팅 로그를 붙여넣으세요.
+Roll20 Chat Archive를 붙여넣으세요.
+
+HTML 로그도 가능합니다.
 "
+
 ></textarea>
 
 
@@ -113,21 +123,18 @@ Roll20 채팅 로그를 붙여넣으세요.
 </button>
 
 
-
 <button id="copyBtn">
 
-HTML 복사
+티스토리 HTML 복사
 
 </button>
-
 
 
 <button id="backupBtn">
 
-백업
+JSON 백업
 
 </button>
-
 
 
 <button id="txtBtn">
@@ -137,16 +144,15 @@ TXT 저장
 </button>
 
 
-
 <button id="pdfBtn">
 
-PDF
+PDF 출력
 
 </button>
 
 
-</div>
 
+</div>
 
 
 </section>
@@ -159,26 +165,29 @@ PDF
 
 
 
-<!-- ==================
-     로그 화면
-================== -->
+<!-- =====================
+ 로그 출력
+===================== -->
 
 
-<section class="viewer">
+<section class="viewer panel">
 
 
 <div class="viewer-header">
 
 
 <h2>
-Archive
+📖 Archive
 </h2>
 
 
 
 <input
+
 id="searchInput"
-placeholder="검색..."
+
+placeholder="로그 검색"
+
 >
 
 
@@ -189,8 +198,11 @@ placeholder="검색..."
 
 
 <div
+
 id="preview"
+
 class="log-container"
+
 >
 
 
@@ -204,7 +216,6 @@ class="log-container"
 </div>
 
 
-
 </section>
 
 
@@ -215,57 +226,79 @@ class="log-container"
 
 
 
-<!-- ==================
-     통계 영역
-================== -->
+<!-- =====================
+ 캐릭터 패널
+===================== -->
 
 
 <aside class="side">
 
 
-<section>
+
+
+
+<section class="panel">
 
 
 <h3>
-통계
+
+🎭 캐릭터 관리
+
 </h3>
 
 
-<div id="statistics">
+
+<p class="help">
+
+로그를 입력하면 캐릭터가 자동 생성됩니다.
+
+</p>
+
+
+
+<div
+
+id="characters"
+
+>
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+<section class="panel">
+
+
+<h3>
+
+📊 통계
+
+</h3>
+
+
+<div
+
+id="statistics"
+
+>
 
 아직 없음
 
 </div>
 
 
-</section>
-
-
-
-
-
-<section>
-
-
-<h3>
-캐릭터
-</h3>
-
-
-<div id="characters">
-
-
-</div>
-
-
-<button id="deleteBtn">
-
-선택 캐릭터 삭제
-
-</button>
-
 
 </section>
+
+
 
 
 
@@ -273,11 +306,8 @@ class="log-container"
 
 
 
+</main>
 
-
-
-
-</div>
 
 
 
@@ -286,7 +316,9 @@ class="log-container"
 
 
 
-<!-- JS 순서 중요 -->
+<!-- =====================
+ Script
+===================== -->
 
 
 <script src="js/parser.js"></script>
@@ -294,6 +326,8 @@ class="log-container"
 <script src="js/cleaner.js"></script>
 
 <script src="js/stats.js"></script>
+
+<script src="js/character.js"></script>
 
 <script src="js/renderer.js"></script>
 
