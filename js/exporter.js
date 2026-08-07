@@ -575,3 +575,41 @@ function escapeExport(text){
 
 
 }
+
+
+ const tistoryCSS = `
+
+.trpg-message{
+
+padding:20px;
+
+margin:15px 0;
+
+background:#fff;
+
+border-radius:15px;
+
+border-left:5px solid #7b8cff;
+
+}
+
+
+.trpg-speaker{
+
+font-weight:bold;
+
+}
+
+
+.trpg-handout{
+
+padding:30px;
+
+background:#fffaf0;
+
+border-radius:20px;
+
+}
+
+
+`;
