@@ -15,11 +15,11 @@ return;
 
 
 
-
 if(
 !data ||
 data.length===0
 ){
+
 
 preview.innerHTML =
 `
@@ -29,6 +29,7 @@ preview.innerHTML =
 `;
 
 return;
+
 
 }
 
@@ -40,8 +41,10 @@ let html="";
 
 data.forEach(item=>{
 
+
 html +=
 renderMessage(item);
+
 
 
 });
@@ -50,6 +53,7 @@ renderMessage(item);
 
 preview.innerHTML =
 html;
+
 
 
 }
@@ -74,9 +78,13 @@ function renderMessage(item){
 
 
 if(
+
 item.type==="system"
+
 ||
+
 !item.speaker
+
 ){
 
 
@@ -85,17 +93,11 @@ return `
 <div class="system-message">
 
 ${
-
 item.html
-
 ?
-
 item.html
-
 :
-
 formatRoll20HTML(item.text)
-
 }
 
 </div>
@@ -103,7 +105,9 @@ formatRoll20HTML(item.text)
 `;
 
 
+
 }
+
 
 
 
@@ -117,17 +121,12 @@ item.speaker
 
 
 
-const safeName =
-escapeRendererHTML(
-item.speaker
-);
-
-
 
 
 const image =
 
-character.image &&
+character.image
+&&
 character.image.startsWith("http")
 
 ?
@@ -150,9 +149,11 @@ return `
 
 class="message-card"
 
-data-character="${safeName}"
+data-character="${item.speaker}"
 
 >
+
+
 
 
 
@@ -162,13 +163,27 @@ class="character-image"
 
 src="${image}"
 
-onerror="this.src='images/default-avatar.png'"
+onerror="
+this.src='images/default-avatar.png'
+"
 
 >
 
 
 
+
+
 <div
+
+class="message-header"
+
+>
+
+
+
+
+
+<span
 
 class="character-name"
 
@@ -176,13 +191,27 @@ style="color:${character.color}"
 
 >
 
-${safeName}
+${escapeRendererHTML(item.speaker)}
 
-<span class="character-role">
+</span>
+
+
+
+
+
+<span
+
+class="character-role"
+
+>
 
 ${character.role}
 
 </span>
+
+
+
+
 
 </div>
 
@@ -190,7 +219,12 @@ ${character.role}
 
 
 
-<div class="message-text">
+
+<div
+
+class="message-body"
+
+>
 
 ${
 
@@ -206,7 +240,11 @@ formatRoll20HTML(item.text)
 
 }
 
+
+
 </div>
+
+
 
 
 
@@ -229,6 +267,8 @@ formatRoll20HTML(item.text)
 
 /*
 텍스트 출력
+
+일반 텍스트용
 
 =================================
 */
@@ -271,6 +311,10 @@ return escapeRendererHTML(text)
 function searchMessages(keyword){
 
 
+keyword =
+keyword.trim();
+
+
 
 const cards =
 document.querySelectorAll(
@@ -283,11 +327,13 @@ cards.forEach(card=>{
 
 
 if(
+!keyword
+||
 card.innerText.includes(keyword)
 ){
 
-card.style.display="";
 
+card.style.display="";
 
 }
 
@@ -298,6 +344,7 @@ card.style.display="none";
 
 
 }
+
 
 
 });
@@ -335,7 +382,9 @@ cards.forEach(card=>{
 
 if(
 card.dataset.character === name
+
 ){
+
 
 card.style.display="";
 
@@ -344,9 +393,12 @@ card.style.display="";
 
 else{
 
+
 card.style.display="none";
 
+
 }
+
 
 
 });
@@ -374,30 +426,36 @@ function escapeRendererHTML(text){
 
 return String(text)
 
+
 .replace(
 /&/g,
 "&amp;"
 )
+
 
 .replace(
 /</g,
 "&lt;"
 )
 
+
 .replace(
 />/g,
 "&gt;"
 )
+
 
 .replace(
 /"/g,
 "&quot;"
 )
 
+
 .replace(
 /'/g,
 "&#039;"
 );
+
 
 
 }
