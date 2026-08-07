@@ -4,6 +4,8 @@ TRPG Log Studio
 Main Controller
 
 모든 기능 연결
+
+=================================
 */
 
 
@@ -15,11 +17,12 @@ let currentStats = {};
 
 
 
-
 /*
-========================
+=================================
+
 DOM 준비
-========================
+
+=================================
 */
 
 
@@ -47,6 +50,7 @@ document.querySelector(
 /*
 붙여넣기 감지
 
+=================================
 */
 
 
@@ -77,6 +81,7 @@ parseCurrent,
 /*
 파일 입력
 
+=================================
 */
 
 
@@ -95,8 +100,8 @@ loadFile
 
 
 
-
 bindButtons();
+
 
 
 });
@@ -108,10 +113,13 @@ bindButtons();
 
 
 
+
 /*
-========================
+=================================
+
 버튼 연결
-========================
+
+=================================
 */
 
 
@@ -162,7 +170,6 @@ applyCurrentTheme
 
 
 Object.keys(buttons)
-
 .forEach(id=>{
 
 
@@ -185,7 +192,10 @@ buttons[id]
 }
 
 
+
 });
+
+
 
 
 
@@ -205,6 +215,7 @@ document.querySelector(
 
 
 
+
 if(search){
 
 
@@ -215,12 +226,14 @@ search.addEventListener(
 e=>{
 
 
-highlightSearch(
+searchMessages(
 e.target.value
 );
 
 
+
 }
+
 
 );
 
@@ -228,7 +241,9 @@ e.target.value
 }
 
 
+
 }
+
 
 
 
@@ -238,9 +253,11 @@ e.target.value
 
 
 /*
-========================
+=================================
+
 로그 변환
-========================
+
+=================================
 */
 
 
@@ -255,43 +272,117 @@ document.querySelector(
 
 
 
-if(!input.value)
+if(
+!input ||
+!input.value
+)
 return;
 
 
 
 
 
-
-let raw =
+const raw =
 input.value;
 
 
 
 
 
+let parsed;
+
+
+
+
+
 /*
-HTML 분석
+HTML 로그
 
 */
 
 
-const parsed =
+if(
+/<[^>]+>/.test(raw)
+){
+
+
+
+parsed =
 parseRoll20HTML(
 raw
 );
 
 
-registerExtractedCharacters(
+
+}
+
+else{
+
+
+
+parsed = {
+
+
+characters:{},
+
+
+messages:
+parseLog(
+raw
+),
+
+
+html:""
+
+
+
+};
+
+
+
+}
+
+
+
+
+
+
+
+/*
+캐릭터 등록
+
+*/
+
+
+if(
+parsed.characters
+){
+
+
+
+applyExtractedCharacters(
 parsed.characters
 );
+
+
+
+}
+
+
+
+
+
 
 
 currentData =
 parsed.messages;
 
 
+
+
+
 renderAll();
+
 
 
 }
@@ -303,53 +394,85 @@ renderAll();
 
 
 
+
 /*
-========================
+=================================
+
 자동 정리
-========================
+
+=================================
 */
 
 
 function cleanCurrent(){
 
 
-if(typeof cleanLog==="function"){
+
+if(
+typeof cleanLog === "function"
+){
+
+
 
 currentData =
 cleanLog(
 currentData
 );
 
+
+
 }
 
 
 
-if(typeof formatLog==="function"){
+
+
+if(
+typeof formatLog === "function"
+){
+
+
 
 currentData =
 formatLog(
 currentData
 );
 
+
+
 }
 
 
 
-if(typeof removeDuplicateLogs==="function"){
+
+
+if(
+typeof removeDuplicateLogs === "function"
+){
+
+
 
 currentData =
 removeDuplicateLogs(
 currentData
 );
 
+
+
 }
+
+
+
+
 
 
 
 renderAll();
 
 
+
 }
+
 
 
 
@@ -359,9 +482,11 @@ renderAll();
 
 
 /*
-========================
-전체 출력
-========================
+=================================
+
+전체 렌더링
+
+=================================
 */
 
 
@@ -373,7 +498,6 @@ const preview =
 document.querySelector(
 "#preview"
 );
-
 
 
 
@@ -390,15 +514,14 @@ preview
 );
 
 
+
 }
 
 
 
 
 
-
-
-renderCharacters();
+renderCharacterUI();
 
 
 
@@ -409,6 +532,7 @@ currentStats =
 analyzeStats(
 currentData
 );
+
 
 
 
@@ -428,32 +552,12 @@ renderStatistics();
 
 
 
-
 /*
-========================
-캐릭터 출력
-========================
-*/
+=================================
 
+통계 출력
 
-function renderCharacters(){
-
-renderCharacterUI();
-
-}
-
-
-
-
-
-
-
-
-
-/*
-========================
-통계
-========================
+=================================
 */
 
 
@@ -468,6 +572,7 @@ document.querySelector(
 
 
 
+
 if(!box)
 return;
 
@@ -476,6 +581,7 @@ return;
 
 
 box.innerHTML =
+
 renderStatsHTML(
 currentStats
 );
@@ -493,9 +599,11 @@ currentStats
 
 
 /*
-========================
+=================================
+
 파일 읽기
-========================
+
+=================================
 */
 
 
@@ -508,8 +616,10 @@ event.target.files[0];
 
 
 
+
 if(!file)
 return;
+
 
 
 
@@ -526,12 +636,14 @@ reader.onload =
 e=>{
 
 
-
+const input =
 document.querySelector(
 "#logInput"
-)
+);
 
-.value =
+
+
+input.value =
 e.target.result;
 
 
@@ -542,7 +654,6 @@ parseCurrent();
 
 
 
-
 };
 
 
@@ -550,9 +661,13 @@ parseCurrent();
 
 
 reader.readAsText(
+
 file,
+
 "UTF-8"
+
 );
+
 
 
 }
@@ -566,9 +681,11 @@ file,
 
 
 /*
-========================
+=================================
+
 HTML 복사
-========================
+
+=================================
 */
 
 
@@ -581,6 +698,7 @@ currentData
 );
 
 
+
 }
 
 
@@ -591,11 +709,12 @@ currentData
 
 
 
-
 /*
-========================
+=================================
+
 JSON 백업
-========================
+
+=================================
 */
 
 
@@ -608,6 +727,7 @@ currentData
 );
 
 
+
 }
 
 
@@ -618,11 +738,12 @@ currentData
 
 
 
-
 /*
-========================
+=================================
+
 TXT 저장
-========================
+
+=================================
 */
 
 
@@ -635,6 +756,7 @@ currentData
 );
 
 
+
 }
 
 
@@ -646,9 +768,11 @@ currentData
 
 
 /*
-========================
+=================================
+
 캐릭터 삭제
-========================
+
+=================================
 */
 
 
@@ -657,8 +781,11 @@ function deleteSelectedCharacters(){
 
 
 const checked =
+
 document.querySelectorAll(
+
 ".character-check:checked"
+
 );
 
 
@@ -666,12 +793,14 @@ document.querySelectorAll(
 
 
 const remove =
+
 Array.from(
 checked
 )
 
 .map(
-item=>item.value
+item=>
+item.value
 );
 
 
@@ -682,39 +811,41 @@ item=>item.value
 currentData =
 
 currentData.filter(
-item=>{
+
+item=>
 
 
-if(
-item.type==="dialog"
-){
+!(
 
-
-return !
+item.speaker &&
 
 remove.includes(
 item.speaker
+)
+
+)
+
+
 );
 
 
-}
-
-
-return true;
-
-
-
-});
 
 
 
 
+
+if(
+typeof removeCharacters === "function"
+){
 
 
 removeCharacters(
 remove
 );
 
+
+
+}
 
 
 
@@ -735,9 +866,11 @@ renderAll();
 
 
 /*
-========================
+=================================
+
 테마 적용
-========================
+
+=================================
 */
 
 
@@ -745,30 +878,56 @@ function applyCurrentTheme(){
 
 
 
+const bg =
+document.querySelector(
+"#bgColor"
+);
+
+
+
+const text =
+document.querySelector(
+"#textColor"
+);
+
+
+
+const chat =
+document.querySelector(
+"#chatColor"
+);
+
+
+
+
+
+if(
+!bg ||
+!text ||
+!chat
+)
+return;
+
+
+
+
+
+
+
 const theme = {
 
 
 background:
-
-document.querySelector(
-"#bgColor"
-).value,
-
+bg.value,
 
 
 text:
-
-document.querySelector(
-"#textColor"
-).value,
-
+text.value,
 
 
 chat:
+chat.value
 
-document.querySelector(
-"#chatColor"
-).value
 
 
 };
@@ -777,9 +936,21 @@ document.querySelector(
 
 
 
+
+
+if(
+typeof applyTheme === "function"
+){
+
+
+
 applyTheme(
 theme
 );
+
+
+
+}
 
 
 
