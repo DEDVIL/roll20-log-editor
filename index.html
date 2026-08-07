@@ -2,59 +2,232 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Roll20 Log Editor</title>
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>TRPG Log Studio</title>
 
 <link rel="stylesheet" href="style.css">
+
 </head>
 
 <body>
 
-<header>
-  <h1>Roll20 Log Editor</h1>
+<header class="top">
+
+<h1>TRPG Log Studio</h1>
+
+<p>
+Roll20 Chat Archive 정리 도구
+</p>
+
 </header>
 
-<main>
 
-<section class="input-panel">
+<div class="layout">
 
-<textarea id="rawLog"
-placeholder="Roll20 로그를 붙여넣으세요"></textarea>
 
-<div class="buttons">
-  <button id="parseBtn">파싱</button>
-  <button id="cleanBtn">문장 교정</button>
-  <button id="htmlBtn">HTML 생성</button>
+<!-- 입력 영역 -->
+
+<section class="input-area">
+
+<h2>로그 입력</h2>
+
+
+<div class="upload-box">
+
+<label>
+로그 파일 열기
+
+<input
+type="file"
+id="fileInput"
+accept=".txt,.html"
+hidden>
+
+</label>
+
 </div>
+
+
+<textarea
+id="logInput"
+placeholder="
+Roll20 로그를 붙여넣으세요.
+
+예)
+
+이셴:뭐해?
+위려운:(웃음) 괜찮아요.
+"></textarea>
+
+
+
+<div class="button-group">
+
+<button id="parseBtn">
+파싱하기
+</button>
+
+
+<button id="cleanBtn">
+자동 교정
+</button>
+
+
+<button id="removeBtn">
+선택 삭제
+</button>
+
+
+<button id="htmlBtn">
+HTML 복사
+</button>
+
+
+<button id="printBtn">
+PDF 저장
+</button>
+
+
+</div>
+
 
 </section>
 
-<aside class="sidebar">
 
-<h3>등장인물</h3>
-<div id="characterList"></div>
 
-<h3>통계</h3>
-<div id="stats"></div>
+
+
+<!-- 미리보기 -->
+
+<section class="viewer">
+
+
+<div class="viewer-header">
+
+<h2>
+Preview
+</h2>
+
+
+<button id="resetBtn">
+초기화
+</button>
+
+</div>
+
+
+
+<div id="preview"
+class="log-container">
+
+<div class="empty">
+
+로그를 입력해주세요.
+
+</div>
+
+</div>
+
+
+
+</section>
+
+
+
+
+
+<!-- 사이드 -->
+
+<aside class="side">
+
+
+<section>
+
+<h3>
+검색
+</h3>
+
 
 <input
-type="text"
 id="searchInput"
-placeholder="검색">
+placeholder="검색어">
+
+
+</section>
+
+
+
+
+<section>
+
+<h3>
+캐릭터
+</h3>
+
+
+<div id="characterList">
+
+</div>
+
+
+</section>
+
+
+
+
+<section>
+
+<h3>
+통계
+</h3>
+
+
+<div id="statistics">
+
+아직 분석되지 않았습니다.
+
+</div>
+
+
+</section>
+
 
 </aside>
 
-<section class="preview">
 
-<h2>미리보기</h2>
 
-<div id="preview"></div>
+</div>
 
-</section>
 
-</main>
+
+
+
+<!-- HTML 출력 -->
+
+<textarea
+id="htmlOutput"
+hidden>
+</textarea>
+
+
+
+
+<script src="js/parser.js"></script>
+
+<script src="js/cleaner.js"></script>
+
+<script src="js/stats.js"></script>
+
+<script src="js/renderer.js"></script>
+
+<script src="js/exporter.js"></script>
 
 <script src="app.js"></script>
 
+
 </body>
+
 </html>
