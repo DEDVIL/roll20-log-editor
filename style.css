@@ -1,37 +1,37 @@
 /*
 TRPG Log Studio
 
-Main Style
+Responsive Archive UI
 
-Responsive
-Roll20 Archive UI
+Roll20 Log Viewer
 */
-
-
-/* =================================
-   기본 변수
-================================= */
 
 
 :root{
 
     --bg-color:#ffffff;
 
+    --panel-color:#ffffff;
+
     --text-color:#222222;
+
+    --sub-text:#777777;
 
     --chat-color:#f5f5f5;
 
     --primary:#6c7ae0;
 
+    --danger:#e57373;
+
     --border:#e5e5e5;
 
-    --radius:16px;
+    --radius:18px;
 
     --shadow:
-    0 4px 15px rgba(0,0,0,.08);
+    0 5px 18px rgba(0,0,0,.08);
 
 
-    --sidebar-width:320px;
+    --sidebar-width:340px;
 
     --max-width:1400px;
 
@@ -39,9 +39,9 @@ Roll20 Archive UI
 
 
 
-/* =================================
-   Reset
-================================= */
+/* =========================
+Reset
+========================= */
 
 
 *{
@@ -51,17 +51,29 @@ Roll20 Archive UI
 }
 
 
+
+html{
+
+    scroll-behavior:smooth;
+
+}
+
+
+
 body{
 
     margin:0;
 
-    padding:20px;
+    padding:24px;
+
 
     background:
     var(--bg-color);
 
+
     color:
     var(--text-color);
+
 
     font-family:
 
@@ -76,28 +88,57 @@ body{
 
 
 
-/* =================================
-   전체 레이아웃
-================================= */
+img{
 
-
-body > *{
-
-    max-width:
-    var(--max-width);
-
-    margin:
-    auto;
+    max-width:100%;
 
 }
 
 
 
+
+
+/* =========================
+Header
+========================= */
+
+
+.header{
+
+    max-width:
+    var(--max-width);
+
+
+    margin:
+
+    0 auto 24px;
+
+}
+
+
+
+
+
+/* =========================
+Layout
+========================= */
+
+
 .app{
+
+
+    max-width:
+    var(--max-width);
+
+
+    margin:auto;
+
 
     display:grid;
 
+
     grid-template-columns:
+
     var(--sidebar-width)
     1fr;
 
@@ -105,135 +146,40 @@ body > *{
     gap:24px;
 
 
+    align-items:start;
+
+
 }
 
 
 
-/* =================================
-   버튼 영역
-================================= */
+.sidebar,
+
+.main{
 
 
-button{
+    min-width:0;
 
 
-    border:none;
+}
+
+
+
+
+
+
+
+/* =========================
+Panel
+========================= */
+
+
+.panel{
+
 
     background:
-    var(--primary);
 
-    color:white;
-
-    padding:
-
-    10px 16px;
-
-
-    border-radius:
-
-    10px;
-
-
-    cursor:pointer;
-
-
-    font-weight:600;
-
-
-    transition:.2s;
-
-
-}
-
-
-button:hover{
-
-
-    opacity:.85;
-
-    transform:
-    translateY(-1px);
-
-}
-
-
-
-/* =================================
-   입력 영역
-================================= */
-
-
-input[type="text"],
-
-input[type="file"]{
-
-
-    width:100%;
-
-}
-
-
-input[type="text"]{
-
-
-    padding:
-
-    10px 12px;
-
-
-    border:
-
-    1px solid var(--border);
-
-
-    border-radius:
-
-    10px;
-
-
-    background:white;
-
-}
-
-
-
-/* =================================
-   캐릭터 영역
-================================= */
-
-
-.character-list{
-
-
-    display:flex;
-
-    flex-direction:column;
-
-    gap:14px;
-
-
-}
-
-
-
-.character-card{
-
-
-    display:grid;
-
-    grid-template-columns:
-
-    60px
-    1fr;
-
-
-    gap:12px;
-
-
-    padding:14px;
-
-
-    background:white;
+    var(--panel-color);
 
 
     border:
@@ -246,12 +192,273 @@ input[type="text"]{
     var(--radius);
 
 
+    padding:20px;
+
+
+    margin-bottom:20px;
+
+
     box-shadow:
 
     var(--shadow);
 
 
 }
+
+
+
+.panel h2{
+
+
+    margin:
+
+    0 0 15px;
+
+
+    font-size:18px;
+
+
+}
+
+
+
+
+
+.help{
+
+    color:
+
+    var(--sub-text);
+
+
+    font-size:14px;
+
+}
+
+
+
+
+
+
+
+/* =========================
+Buttons
+========================= */
+
+
+button{
+
+
+    width:auto;
+
+
+    border:none;
+
+
+    background:
+
+    var(--primary);
+
+
+    color:white;
+
+
+    padding:
+
+    11px 16px;
+
+
+    border-radius:
+
+    12px;
+
+
+    cursor:pointer;
+
+
+    font-weight:700;
+
+
+    transition:.2s;
+
+
+    margin-bottom:8px;
+
+
+}
+
+
+
+button:hover{
+
+
+    opacity:.85;
+
+
+    transform:
+
+    translateY(-1px);
+
+
+}
+
+
+
+button.danger{
+
+
+    background:
+
+    var(--danger);
+
+}
+
+
+
+
+.actions button{
+
+
+    display:block;
+
+
+    width:100%;
+
+
+}
+
+
+
+
+
+
+
+/* =========================
+Input
+========================= */
+
+
+input[type="text"],
+
+
+input[type="file"]{
+
+
+    width:100%;
+
+
+}
+
+
+
+input[type="text"]{
+
+
+    padding:
+
+    12px;
+
+
+    border:
+
+    1px solid var(--border);
+
+
+    border-radius:
+
+    12px;
+
+
+    background:
+
+    var(--panel-color);
+
+
+    color:
+
+    var(--text-color);
+
+
+}
+
+
+
+input[type="color"]{
+
+
+    width:45px;
+
+
+    height:35px;
+
+
+    border:none;
+
+
+}
+
+
+
+
+
+
+
+/* =========================
+Character
+========================= */
+
+
+.character-list{
+
+
+    display:flex;
+
+
+    flex-direction:column;
+
+
+    gap:14px;
+
+
+}
+
+
+
+
+.character-card{
+
+
+    display:grid;
+
+
+    grid-template-columns:
+
+    70px 1fr;
+
+
+    gap:14px;
+
+
+    padding:15px;
+
+
+    background:
+
+    var(--panel-color);
+
+
+    border:
+
+    1px solid var(--border);
+
+
+    border-radius:
+
+    16px;
+
+
+}
+
 
 
 
@@ -262,6 +469,7 @@ input[type="text"]{
 
 
     width:60px;
+
 
     height:60px;
 
@@ -274,16 +482,22 @@ input[type="text"]{
 
     background:#ddd;
 
+
 }
+
+
 
 
 
 .character-name{
 
 
-    font-weight:700;
+    font-weight:800;
+
 
 }
+
+
 
 
 
@@ -292,12 +506,10 @@ input[type="text"]{
 
     display:inline-block;
 
-    margin-top:4px;
-
 
     padding:
 
-    2px 8px;
+    3px 10px;
 
 
     border-radius:
@@ -305,18 +517,23 @@ input[type="text"]{
     999px;
 
 
-    background:#eee;
+    background:
+
+    rgba(108,122,224,.15);
 
 
     font-size:12px;
+
 
 }
 
 
 
-/* =================================
-   로그 영역
-================================= */
+
+
+/* =========================
+Log
+========================= */
 
 
 .log-container{
@@ -324,7 +541,9 @@ input[type="text"]{
 
     display:flex;
 
+
     flex-direction:column;
+
 
     gap:16px;
 
@@ -333,9 +552,6 @@ input[type="text"]{
 
 
 
-/* =================================
-   메시지 카드
-================================= */
 
 
 .message-card{
@@ -346,14 +562,13 @@ input[type="text"]{
 
     grid-template-columns:
 
-    55px
-    1fr;
+    60px 1fr;
 
 
-    gap:14px;
+    gap:15px;
 
 
-    padding:18px;
+    padding:20px;
 
 
     background:
@@ -376,6 +591,9 @@ input[type="text"]{
     var(--shadow);
 
 
+    overflow:hidden;
+
+
 }
 
 
@@ -392,43 +610,42 @@ input[type="text"]{
 
 
 
-/* 캐릭터 이미지 */
-
-
 .message-card .character-image{
 
 
     width:55px;
 
+
     height:55px;
 
-}
 
+}
 
 
 
 .message-card .character-name{
 
 
-    font-size:15px;
-
-
-    margin-bottom:6px;
+    margin-bottom:5px;
 
 
 }
 
 
 
-/* =================================
-   Roll20 HTML 보존 영역
-================================= */
+
+
+
+/* =========================
+Roll20 HTML
+========================= */
 
 
 .message-card img{
 
 
     max-width:100%;
+
 
     height:auto;
 
@@ -442,6 +659,7 @@ input[type="text"]{
 
     max-width:100%;
 
+
     overflow:auto;
 
 
@@ -451,18 +669,22 @@ input[type="text"]{
 
 .message-card iframe,
 
+
 .message-card script,
+
 
 .message-card style{
 
 
     display:none!important;
 
+
 }
 
 
 
 .message-card div,
+
 
 .message-card span{
 
@@ -474,44 +696,16 @@ input[type="text"]{
 
 
 
-/* =================================
-   시스템 메시지
-================================= */
 
-
-.system-message{
-
-
-    padding:14px;
-
-
-    background:#fafafa;
-
-
-    border-radius:
-
-    12px;
-
-
-    color:#666;
-
-
-    font-size:14px;
-
-
-}
-
-
-
-/* =================================
-   통계
-================================= */
+/* =========================
+Statistics
+========================= */
 
 
 #statistics{
 
 
-    margin-top:20px;
+    margin-top:10px;
 
 
 }
@@ -524,7 +718,9 @@ input[type="text"]{
 .character-item{
 
 
-    background:white;
+    background:
+
+    var(--panel-color);
 
 
     border:
@@ -537,7 +733,7 @@ input[type="text"]{
     14px;
 
 
-    padding:14px;
+    padding:15px;
 
 
     margin-bottom:12px;
@@ -547,56 +743,42 @@ input[type="text"]{
 
 
 
-/* =================================
-   검색
-================================= */
-
-
-#searchInput{
-
-
-    margin-bottom:16px;
-
-
-}
 
 
 
-/* =================================
-   색상 입력
-================================= */
+
+/* =========================
+Search
+========================= */
 
 
-input[type="color"]{
+.search{
 
 
-    width:45px;
-
-    height:35px;
-
-
-    border:none;
-
-
-    padding:0;
+    margin-bottom:0;
 
 
 }
 
 
 
-/* =================================
-   모바일
-================================= */
+
+
+
+
+/* =========================
+Mobile
+========================= */
 
 
 @media(max-width:900px){
 
 
-
 body{
 
-    padding:12px;
+
+    padding:14px;
+
 
 }
 
@@ -643,8 +825,11 @@ body{
     grid-template-columns:
 
     repeat(
+
     auto-fit,
-    minmax(240px,1fr)
+
+    minmax(250px,1fr)
+
     );
 
 
@@ -655,25 +840,7 @@ body{
 .message-card{
 
 
-    grid-template-columns:
-
-    45px
-    1fr;
-
-
-    padding:14px;
-
-
-}
-
-
-
-.character-image{
-
-
-    width:45px;
-
-    height:45px;
+    padding:16px;
 
 
 }
@@ -683,10 +850,6 @@ body{
 }
 
 
-
-/* =================================
-   작은 모바일
-================================= */
 
 
 @media(max-width:480px){
@@ -697,6 +860,17 @@ button{
 
 
     width:100%;
+
+
+}
+
+
+
+.panel{
+
+
+    padding:15px;
+
 
 }
 
@@ -715,62 +889,23 @@ button{
 .message-card .character-image{
 
 
-    margin-bottom:8px;
+    margin-bottom:10px;
 
 
 }
 
 
 
-}
+.character-card{
 
 
+    grid-template-columns:
 
-/* =================================
-   다크 모드 자동 대응
-================================= */
-
-
-@media(prefers-color-scheme:dark){
-
-
-:root{
-
-
-    --bg-color:#111;
-
-    --text-color:#eee;
-
-    --chat-color:#1c1c1c;
-
-    --border:#333;
+    55px 1fr;
 
 
 }
 
-
-
-.character-card,
-
-.stat-box,
-
-.character-item{
-
-
-    background:#181818;
-
-}
-
-
-
-input[type="text"]{
-
-
-    background:#222;
-
-    color:white;
-
-}
 
 
 }
