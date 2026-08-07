@@ -7,12 +7,14 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+
 <title>
 TRPG Log Studio
 </title>
 
 
 <link rel="stylesheet" href="style.css">
+
 
 </head>
 
@@ -27,7 +29,7 @@ TRPG Log Studio
 </h1>
 
 <p class="help">
-Roll20 로그를 붙여넣거나 파일로 불러와 정리합니다.
+Roll20 채팅 로그를 정리하고 캐릭터별로 관리하는 아카이브 도구
 </p>
 
 </header>
@@ -39,9 +41,10 @@ Roll20 로그를 붙여넣거나 파일로 불러와 정리합니다.
 
 
 
-<!-- =====================
+<!-- ======================
 사이드바
-===================== -->
+====================== -->
+
 
 <aside class="sidebar">
 
@@ -49,9 +52,11 @@ Roll20 로그를 붙여넣거나 파일로 불러와 정리합니다.
 
 <section class="panel">
 
+
 <h2>
 로그 입력
 </h2>
+
 
 
 <textarea
@@ -61,12 +66,13 @@ id="logInput"
 class="log-input"
 
 placeholder="
-Roll20 채팅 HTML 또는 텍스트 로그를 붙여넣으세요.
+Roll20 HTML 또는 텍스트 로그를 붙여넣으세요.
 
 예:
 캐릭터명: 대사
 
-HTML 복사도 지원됩니다.
+또는 Roll20 채팅 HTML 전체 복사
+
 "
 
 ></textarea>
@@ -86,6 +92,10 @@ hidden
 >
 
 
+
+<div class="actions">
+
+
 <button
 id="parseBtn"
 >
@@ -102,48 +112,7 @@ id="cleanBtn"
 
 
 
-</section>
-
-
-
-
-
-
-<section class="panel actions">
-
-
-<h2>
-내보내기
-</h2>
-
-
-<button
-id="copyBtn"
->
-티스토리 HTML 복사
-</button>
-
-
-<button
-id="backupBtn"
->
-JSON 백업
-</button>
-
-
-<button
-id="txtBtn"
->
-TXT 저장
-</button>
-
-
-<button
-id="pdfBtn"
->
-PDF 출력
-</button>
-
+</div>
 
 
 </section>
@@ -157,8 +126,64 @@ PDF 출력
 
 
 <h2>
+내보내기
+</h2>
+
+
+<div class="actions">
+
+
+<button
+id="copyBtn"
+>
+티스토리 HTML 복사
+</button>
+
+
+
+<button
+id="backupBtn"
+>
+JSON 백업
+</button>
+
+
+
+<button
+id="txtBtn"
+>
+TXT 저장
+</button>
+
+
+
+<button
+id="pdfBtn"
+>
+PDF 출력
+</button>
+
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+
+<section class="panel">
+
+
+<h2>
 검색
 </h2>
+
 
 
 <input
@@ -180,17 +205,13 @@ placeholder="로그 검색"
 
 
 
+
 <section class="panel">
 
 
 <h2>
-캐릭터
+캐릭터 관리
 </h2>
-
-
-<p class="help">
-로그 분석 후 캐릭터가 자동 생성됩니다.
-</p>
 
 
 
@@ -200,7 +221,9 @@ id="characters"
 
 class="character-list"
 
-></div>
+>
+
+</div>
 
 
 
@@ -228,12 +251,18 @@ class="danger"
 
 
 <h2>
-테마
+테마 설정
 </h2>
 
 
+
+<div class="theme-row">
+
+
 <label>
-배경색
+
+배경
+
 <input
 
 type="color"
@@ -243,14 +272,15 @@ id="bgColor"
 value="#ffffff"
 
 >
+
 </label>
 
 
-<br>
-
 
 <label>
-글자색
+
+글자
+
 <input
 
 type="color"
@@ -260,14 +290,15 @@ id="textColor"
 value="#222222"
 
 >
+
 </label>
 
 
-<br>
-
 
 <label>
-채팅 박스
+
+채팅
+
 <input
 
 type="color"
@@ -277,7 +308,13 @@ id="chatColor"
 value="#f5f5f5"
 
 >
+
 </label>
+
+
+
+</div>
+
 
 
 
@@ -296,6 +333,33 @@ id="applyTheme"
 
 
 
+
+<section class="panel">
+
+
+<h2>
+통계
+</h2>
+
+
+
+<div
+
+id="statistics"
+
+>
+
+아직 없음
+
+</div>
+
+
+
+</section>
+
+
+
+
 </aside>
 
 
@@ -304,12 +368,13 @@ id="applyTheme"
 
 
 
-<!-- =====================
-메인
-===================== -->
+
+<!-- ======================
+본문
+====================== -->
+
 
 <main class="main">
-
 
 
 <section class="panel">
@@ -318,6 +383,7 @@ id="applyTheme"
 <h2>
 로그 미리보기
 </h2>
+
 
 
 <div
@@ -337,38 +403,15 @@ class="log-container"
 
 
 
-
-
-
-
-<section class="panel">
-
-
-<h2>
-통계
-</h2>
-
-
-<div
-
-id="statistics"
-
->
-
-아직 없음
-
-</div>
-
-
-</section>
-
-
-
 </main>
 
 
 
+
+
 </div>
+
+
 
 
 
@@ -384,13 +427,14 @@ id="statistics"
 
 <script src="js/cleaner.js"></script>
 
-<script src="js/renderer.js"></script>
-
 <script src="js/stats.js"></script>
+
+<script src="js/renderer.js"></script>
 
 <script src="js/exporter.js"></script>
 
 <script src="js/app.js"></script>
+
 
 
 </body>
