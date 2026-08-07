@@ -29,7 +29,61 @@ let inHTML = false;
 
     while(i < lines.length) {
 
+if(
+    lines[i].includes("<div")
+    ||
+    lines[i].includes("<table")
+    ||
+    lines[i].includes("<span")
+){
 
+    inHTML = true;
+
+}
+
+
+
+if(inHTML){
+
+
+    htmlBuffer.push(
+        lines[i]
+    );
+
+
+    if(
+        lines[i].includes("</div>")
+        ||
+        lines[i].includes("</table>")
+    ){
+
+
+        result.push({
+
+            type:
+            "roll-design",
+
+            html:
+            htmlBuffer.join("\n")
+
+        });
+
+
+
+        htmlBuffer=[];
+
+        inHTML=false;
+
+
+    }
+
+
+    i++;
+
+    continue;
+
+}
+     
         let line =
             lines[i].trim();
 
