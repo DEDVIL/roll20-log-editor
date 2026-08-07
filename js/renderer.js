@@ -109,7 +109,20 @@ function renderMessage(item){
 <div class="system-message">
 
 
-${formatRoll20HTML(item.text)}
+${
+
+item.html
+
+?
+
+item.html
+
+:
+
+formatRoll20HTML(item.text)
+
+}
+
 
 
 </div>
