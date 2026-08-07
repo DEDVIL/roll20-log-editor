@@ -10,6 +10,8 @@ Cleaner
 
 
 
+
+
 /*
 =================================
 
@@ -22,89 +24,77 @@ Cleaner
 function cleanText(text){
 
 
-    if(!text)
-        return "";
+if(!text)
+return "";
 
 
 
-    let result = text;
-
-
-
-    /*
-    =====================
-    숨김 메시지 제거
-    =====================
-    */
-
-
-    result =
-    result.replace(
-        /This message (has been hidden|is hidden)\.?/gi,
-        ""
-    );
+let result=text;
 
 
 
 
 
-    /*
-    =====================
-    점삼육 교정
+/*
+숨김 메시지 제거
 
-    ...
-    ......
-    ........
-    
-    =====================
-    */
+*/
 
 
-    result =
-    result.replace(
-        /\.{3,}/g,
-        "⋯"
-    );
-
-
-
-    result =
-    result.replace(
-        /⋯{2,}/g,
-        "⋯⋯"
-    );
+result =
+result.replace(
+/This message (has been hidden|is hidden)\.?/gi,
+""
+);
 
 
 
 
 
 
+/*
+점삼육 교정
 
-    /*
-    =====================
-    대시 정리
-
-    --
-    ---
-    ----
-
-    =====================
-    */
+*/
 
 
-    result =
-    result.replace(
-        /-{2,}/g,
-        "─"
-    );
+result =
+result.replace(
+/\.{3,}/g,
+match=>{
+
+
+if(
+match.length>=6
+)
+
+return "⋯⋯";
 
 
 
-    result =
-    result.replace(
-        /─+/g,
-        "────"
-    );
+return "⋯";
+
+
+}
+
+);
+
+
+
+
+
+
+/*
+이미 변환된 말줄임 정리
+
+*/
+
+
+result =
+result.replace(
+/⋯{3,}/g,
+"⋯⋯"
+);
 
 
 
@@ -112,57 +102,77 @@ function cleanText(text){
 
 
 
-    /*
-    =====================
-    괄호 정리
+/*
+대시 정리
 
-    ( 웃음 )
-
-    ↓
-
-    (웃음)
-
-    =====================
-    */
+*/
 
 
-    result =
-    result.replace(
-        /\(\s+(.*?)\s+\)/g,
-        "($1)"
-    );
+result =
+result.replace(
+/-{2,}/g,
+"─"
+);
 
 
+
+result =
+result.replace(
+/─{5,}/g,
+"────"
+);
 
 
 
 
 
-    /*
-    =====================
-    공백 정리
-
-    =====================
-    */
-
-
-    result =
-    result.replace(
-        / {2,}/g,
-        " "
-    );
 
 
 
-    result =
-    result.replace(
-        /\t/g,
-        " "
-    );
+
+/*
+괄호 공백 제거
+
+*/
+
+
+result =
+result.replace(
+/\(\s+(.*?)\s+\)/g,
+"($1)"
+);
 
 
 
-    return result.trim();
+
+
+
+
+
+/*
+공백 정리
+
+*/
+
+
+result =
+result.replace(
+/ {2,}/g,
+" "
+);
+
+
+
+result =
+result.replace(
+/\t/g,
+" "
+);
+
+
+
+return result.trim();
+
 
 
 }
@@ -188,113 +198,95 @@ function cleanLog(data){
 
 
 
-    const cleaned = [];
+const cleaned=[];
 
 
 
-    const duplicateCheck =
-    new Set();
+let previousKey="";
 
 
 
 
 
+data.forEach(item=>{
 
 
-    data.forEach(item=>{
 
 
 
-        /*
-        =====================
-        숨김 메시지 제거
+/*
+숨김 메시지 제거
 
-        =====================
-        */
+*/
 
 
-        if(
-            item.text
-            &&
-            /This message (has been hidden|is hidden)/i
-            .test(item.text)
-        ){
+if(
 
-            return;
+(item.text &&
+/This message (has been hidden|is hidden)/i.test(item.text))
 
-        }
+||
 
+(item.html &&
+/This message (has been hidden|is hidden)/i.test(item.html))
 
+){
 
-        if(
-            item.html
-            &&
-            /This message (has been hidden|is hidden)/i
-            .test(item.html)
-        ){
+return;
 
-            return;
+}
 
-        }
 
 
 
 
 
 
+const newItem={
 
-        /*
-        =====================
-        원본 보호
+...item
 
-        =====================
-        */
+};
 
 
-        const newItem =
-        {
-            ...item
-        };
 
 
 
 
 
 
+/*
+텍스트 정리
 
-        /*
-        =====================
-        텍스트 정리
+*/
 
-        =====================
-        */
 
+if(newItem.text){
 
-        if(newItem.text){
 
+newItem.text =
+cleanText(
+newItem.text
+);
 
-            newItem.text =
-            cleanText(
-                newItem.text
-            );
 
+}
 
-        }
 
 
 
 
 
-        if(newItem.action){
+if(newItem.action){
 
 
-            newItem.action =
-            cleanText(
-                newItem.action
-            );
+newItem.action =
+cleanText(
+newItem.action
+);
 
 
-        }
+}
 
 
 
@@ -302,101 +294,62 @@ function cleanLog(data){
 
 
 
-        /*
-        =====================
-        HTML 내부 텍스트 정리
 
-        =====================
-        */
+/*
+연속 중복 제거
 
+*/
 
-        if(newItem.html){
 
+const key =
 
-            newItem.html =
-            cleanText(
-                newItem.html
-            );
 
+(newItem.speaker || "")
 
-        }
++
 
+"|"
 
++
 
+(newItem.text || "");
 
 
 
 
 
-        /*
-        =====================
-        로그 두배 오류 제거
+if(
+key === previousKey
+){
 
-        같은 캐릭터의 같은 대사 제거
+return;
 
-        =====================
-        */
+}
 
 
-        const key =
 
-        (
-            newItem.speaker
-            ||
-            ""
-        )
 
-        +
 
-        "|"
+previousKey=key;
 
-        +
 
-        (
-            newItem.text
-            ||
-            ""
-        );
 
 
 
+cleaned.push(
+newItem
+);
 
 
-        if(
-            duplicateCheck.has(key)
-        ){
 
-            return;
 
-        }
+});
 
 
 
 
 
-        duplicateCheck.add(key);
-
-
-
-
-
-
-        cleaned.push(
-            newItem
-        );
-
-
-
-
-
-    });
-
-
-
-
-
-
-    return cleaned;
+return cleaned;
 
 
 
