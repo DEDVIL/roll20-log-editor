@@ -1,76 +1,63 @@
 /*
- TRPG Log Studio
+TRPG Log Studio
 
- Statistics Module
+Statistics Module
 
- 로그 분석
+로그 분석
+
+=================================
 */
 
 
-/*
-================================
 
-전체 통계
-
-================================
-*/
 
 
 function analyzeStats(data){
 
 
-    const result = {
+
+const result={
 
 
-        totalCharacters: 0,
+totalCharacters:0,
 
 
-        totalMessages: 0,
+totalMessages:0,
 
 
-        totalLetters: 0,
+totalLetters:0,
 
 
-        dialogues: 0,
+dialogues:0,
 
 
-        narrations: 0,
+narrations:0,
 
 
-        characters: {}
-
-    };
+characters:{}
 
 
-
-
-
-    data.forEach(item=>{
-
-
-        /*
-        전체 메시지
-        */
-
-
-        result.totalMessages++;
+};
 
 
 
 
 
-        /*
-        글자수 계산
-
-        공백 제외
-
-        */
+data.forEach(item=>{
 
 
-       const source =
-item.text ||
-item.html ||
-"";
+
+
+
+result.totalMessages++;
+
+
+
+
+
+const source =
+extractText(item);
+
 
 
 result.totalLetters +=
@@ -81,141 +68,178 @@ countLetters(source);
 
 
 
-        /*
-        서술문
 
-        */
+if(
 
+item.type==="narration"
 
-        if(
-            item.type === "narration"
-        ){
+||
 
-            result.narrations++;
+item.type==="system"
 
-        }
+){
 
 
+result.narrations++;
 
 
-
-        /*
-        대사
-
-        */
-
-
-        if(
-            item.type === "dialog"
-        ){
-
-
-            result.dialogues++;
+}
 
 
 
-            const name =
-            item.speaker;
 
 
-if(!item.speaker)
-return;
 
 
-if(!result.characters[name]){
+if(
+
+item.type==="dialog"
+
+&&
+
+item.speaker
+
+){
+
+
+
+result.dialogues++;
+
+
+
+const name =
+item.speaker.trim();
+
+
+
+
+
+if(
+!result.characters[name]
+){
 
 
 const info =
 getCharacter(name);
 
 
+
 result.characters[name]={
+
 
 name,
 
-image:info.image,
 
-role:info.role,
+image:
+info.image,
 
-color:info.color,
+
+role:
+info.role,
+
+
+color:
+info.color,
+
 
 count:0,
 
+
 letters:0,
 
+
 average:0
+
+
 
 };
 
 
+
 }
+
+
+
 
 
 
 
 const length =
 countLetters(
-item.text ||
-item.html ||
-""
+source
 );
+
 
 
 
 result.characters[name].count++;
 
-result.characters[name].letters += length;
 
-
-
-        }
-
-
-
-    });
+result.characters[name].letters +=
+length;
 
 
 
 
 
-
-    /*
-    평균 계산
-
-    */
+}
 
 
-    Object.values(
-        result.characters
-    )
-    .forEach(char=>{
 
-
-        if(char.count){
-
-            char.average =
-            Math.floor(
-                char.letters /
-                char.count
-            );
-
-        }
-
-
-    });
+});
 
 
 
 
 
-    result.totalCharacters =
-    Object.keys(
-        result.characters
-    ).length;
 
 
 
-    return result;
+Object.values(
+result.characters
+)
+.forEach(char=>{
+
+
+
+if(
+char.count
+){
+
+
+char.average =
+Math.floor(
+
+char.letters /
+
+char.count
+
+);
+
+
+}
+
+
+
+});
+
+
+
+
+
+
+
+result.totalCharacters =
+Object.keys(
+result.characters
+).length;
+
+
+
+
+
+return result;
+
 
 
 }
@@ -227,33 +251,79 @@ result.characters[name].letters += length;
 
 
 
+
 /*
-================================
+HTML / TEXT 변환
 
+=================================
+*/
+
+
+function extractText(item){
+
+
+
+if(item.text)
+
+return item.text;
+
+
+
+
+
+if(item.html){
+
+
+return convertHTMLToText(
+item.html
+);
+
+
+}
+
+
+
+return "";
+
+
+
+}
+
+
+
+
+
+
+
+
+
+/*
 글자수 계산
-
-한글/영문/숫자 포함
 
 공백 제외
 
-================================
+=================================
 */
 
 
 function countLetters(text){
 
 
-    if(!text)
-        return 0;
+
+if(!text)
+return 0;
 
 
 
-    return text
-    .replace(
-        /\s/g,
-        ""
-    )
-    .length;
+return String(text)
+
+.replace(
+/\s/g,
+""
+)
+
+.length;
+
 
 
 }
@@ -267,28 +337,30 @@ function countLetters(text){
 
 
 /*
-================================
-
 캐릭터 정렬
 
-많이 말한 순서
-
-================================
+=================================
 */
 
 
 function sortCharacters(stats){
 
 
-    return Object
-    .values(
-        stats.characters
-    )
-    .sort(
-        (a,b)=>
-        b.letters -
-        a.letters
-    );
+return Object.values(
+stats.characters
+)
+
+.sort(
+
+(a,b)=>
+
+b.letters -
+
+a.letters
+
+);
+
+
 
 }
 
@@ -301,102 +373,167 @@ function sortCharacters(stats){
 
 
 /*
-================================
+통계 UI
 
-사이드바 출력용
-
-================================
+=================================
 */
 
 
 function renderStatsHTML(stats){
 
 
-    let html = "";
+
+let html="";
 
 
 
-    html += `
-
-    <div class="stat-box">
-
-    <b>
-    전체
-    </b>
-
-    <br>
-
-    메시지:
-    ${stats.totalMessages}
-
-    <br>
-
-    글자:
-    ${stats.totalLetters.toLocaleString()}
-
-    <br>
-
-    캐릭터:
-    ${stats.totalCharacters}
-
-    </div>
-
-    `;
+html += `
 
 
+<div class="stat-box">
+
+
+<b>
+전체
+</b>
+
+
+<br>
+
+
+메시지:
+${stats.totalMessages}
+
+
+<br>
+
+
+글자:
+${stats.totalLetters.toLocaleString()}
+
+
+<br>
+
+
+캐릭터:
+${stats.totalCharacters}
+
+
+</div>
+
+
+`;
 
 
 
-    const chars =
-    sortCharacters(stats);
 
 
 
-    chars.forEach(char=>{
+const chars =
+sortCharacters(stats);
 
 
-        html += `
-
-        <div class="character-item">
 
 
-        <div>
 
-        <b>
+chars.forEach(char=>{
+
+
+
+html += `
+
+
+<div class="character-item">
+
+
+<img
+
+src="${
+
+char.image ||
+
+"images/default-avatar.png"
+
+}"
+
+class="stat-character-image"
+
+>
+
+
+
+<div>
+
+
+<b>
+
 ${escapeStatsHTML(char.name)}
-        </b>
 
-        <br>
-
-        ${char.letters.toLocaleString()}
-        자
-
-        </div>
+</b>
 
 
-        <div>
-
-        ${char.count}
-        회
-
-        </div>
+<br>
 
 
-        </div>
+${char.letters.toLocaleString()}
+자
 
 
-        `;
+<br>
 
 
-    });
+평균:
+${char.average.toLocaleString()}
+자
+
+
+</div>
 
 
 
+<div>
 
-    return html;
+
+${char.count}
+회
+
+
+</div>
+
+
+
+</div>
+
+
+`;
+
+
+
+});
+
+
+
+
+
+return html;
+
 
 
 }
+
+
+
+
+
+
+
+
+
+/*
+HTML 보호
+
+=================================
+*/
 
 
 function escapeStatsHTML(text){
@@ -404,30 +541,36 @@ function escapeStatsHTML(text){
 
 return String(text)
 
+
 .replace(
 /&/g,
 "&amp;"
 )
+
 
 .replace(
 /</g,
 "&lt;"
 )
 
+
 .replace(
 />/g,
 "&gt;"
 )
+
 
 .replace(
 /"/g,
 "&quot;"
 )
 
+
 .replace(
 /'/g,
 "&#039;"
 );
+
 
 
 }
