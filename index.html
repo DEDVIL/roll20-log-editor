@@ -5,14 +5,18 @@
 
 <meta charset="UTF-8">
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
 
 <title>
 TRPG Log Studio
 </title>
 
 
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet"
+href="style.css">
+
 
 </head>
 
@@ -20,18 +24,18 @@ TRPG Log Studio
 <body>
 
 
-<div class="app">
-
-
 <header class="header">
+
 
 <h1>
 TRPG Log Studio
 </h1>
 
+
 <p>
-Roll20 로그 정리 · 롤꾸 보존 · 티스토리 변환
+Roll20 로그 보존 및 정리 도구
 </p>
+
 
 </header>
 
@@ -39,15 +43,13 @@ Roll20 로그 정리 · 롤꾸 보존 · 티스토리 변환
 
 
 
-<div class="layout">
+<div class="app">
 
 
 
-
-
-<!-- =================
-사이드 패널
-================= -->
+<!-- =========================
+     사이드바
+========================= -->
 
 
 <aside class="sidebar">
@@ -61,10 +63,6 @@ Roll20 로그 정리 · 롤꾸 보존 · 티스토리 변환
 파일
 </h2>
 
-
-<label class="upload-btn">
-
-파일 불러오기
 
 
 <input
@@ -80,7 +78,16 @@ hidden
 >
 
 
-</label>
+<button
+onclick="
+document.querySelector('#fileInput').click()
+"
+>
+
+파일 불러오기
+
+</button>
+
 
 
 </section>
@@ -89,15 +96,15 @@ hidden
 
 
 
-<section class="panel">
+
+
+<section class="panel actions">
 
 
 <h2>
 변환
 </h2>
 
-
-<div class="button-grid">
 
 
 <button id="parseBtn">
@@ -107,11 +114,13 @@ hidden
 </button>
 
 
+
 <button id="cleanBtn">
 
 자동 정리
 
 </button>
+
 
 
 <button id="copyBtn">
@@ -121,11 +130,13 @@ hidden
 </button>
 
 
+
 <button id="backupBtn">
 
 JSON 백업
 
 </button>
+
 
 
 <button id="txtBtn">
@@ -135,41 +146,13 @@ TXT 저장
 </button>
 
 
+
 <button id="pdfBtn">
 
 PDF 출력
 
 </button>
 
-
-</div>
-
-
-</section>
-
-
-
-
-
-
-
-<section class="panel">
-
-
-<h2>
-검색
-</h2>
-
-
-<input
-
-id="searchInput"
-
-class="search"
-
-placeholder="로그 검색"
-
->
 
 
 </section>
@@ -231,17 +214,13 @@ class="danger"
 
 
 
-
 <section class="panel">
 
 
 <h2>
-테마
+테마 설정
 </h2>
 
-
-
-<div class="color-row">
 
 
 <label>
@@ -300,9 +279,6 @@ value="#f5f5f5"
 
 
 
-</div>
-
-
 
 <button
 
@@ -315,7 +291,10 @@ id="applyTheme"
 </button>
 
 
+
 </section>
+
+
 
 
 
@@ -329,16 +308,20 @@ id="applyTheme"
 </h2>
 
 
-<div id="statistics">
+
+<div
+
+id="statistics"
+
+>
 
 아직 없음
 
 </div>
 
 
+
 </section>
-
-
 
 
 
@@ -350,15 +333,41 @@ id="applyTheme"
 
 
 
-<!-- =================
-메인 로그
-================= -->
 
 
-<main class="content">
+<!-- =========================
+     메인
+========================= -->
 
 
-<div
+<main class="main">
+
+
+
+<section class="panel">
+
+
+<input
+
+id="searchInput"
+
+class="search"
+
+placeholder="로그 검색"
+
+>
+
+
+</section>
+
+
+
+
+
+
+
+
+<section
 
 id="preview"
 
@@ -374,19 +383,22 @@ class="log-container"
 </div>
 
 
-</div>
+</section>
+
+
+
 
 
 </main>
 
 
 
-
-
 </div>
 
 
-</div>
+
+
+
 
 
 
@@ -406,7 +418,7 @@ class="log-container"
 
 <script src="js/exporter.js"></script>
 
-<script src="app.js"></script>
+<script src="js/app.js"></script>
 
 
 </body>
