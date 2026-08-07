@@ -1064,5 +1064,46 @@ background:#111827;
 }
 
 
+.character-top{
+    display:flex;
+    align-items:center;
+    gap:14px;
+}
 
+
+.character-top .character-check{
+    margin-left:auto;
+}
+
+
+
+.character-settings{
+    margin-top:15px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+
+
+.character-settings label{
+    font-size:13px;
+    color:var(--sub-text);
+}
+
+
+
+.character-settings input[type="text"],
+.character-settings select{
+    width:100%;
+    margin-top:5px;
+    padding:8px 10px;
+    border-radius:10px;
+    border:1px solid var(--border);
+}
+
+
+.character-role{
+    margin-top:5px;
+}
 }
