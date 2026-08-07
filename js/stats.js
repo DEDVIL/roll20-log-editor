@@ -131,37 +131,32 @@ getCharacter(name);
 
 
 
+const info =
+getCharacter(name);
+
+
 result.characters[name]={
 
+    name,
 
-name,
+    image:
+    info.image,
 
+    role:
+    info.role,
 
-image:
-info.image,
+    color:
+    info.color,
 
+    count:0,
 
-role:
-info.role,
+    letters:0,
 
-
-color:
-info.color,
-
-
-count:0,
-
-
-letters:0,
-
-
-average:0
-
+    average:0
 
 };
 
 
-}
 
 
 
