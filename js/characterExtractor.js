@@ -10,7 +10,7 @@ Roll20 Character Extractor
 function extractCharactersFromHTML(root){
 
 
-const result = {};
+const result={};
 
 
 
@@ -19,7 +19,7 @@ const result = {};
 /*
 =================================
 
-이미지 기반 추출
+1. 이미지 기반 추출
 
 =================================
 */
@@ -45,34 +45,44 @@ return;
 
 
 
+/*
+캐릭터 후보 영역 찾기
+
+*/
 
 
-const parentText =
-img.parentElement
-?.innerText
+let area =
+img.closest(
+".message, .chat-message, div"
+);
+
+
+
+if(!area)
+return;
+
+
+
+const text =
+area.innerText
 ||
 "";
 
 
 
-
-
 const name =
 findCharacterName(
-parentText
+text
 );
 
 
 
+if(!name)
+return;
 
 
-if(name){
 
-
-
-if(
-!result[name]
-){
+if(!result[name]){
 
 
 result[name]={
@@ -84,20 +94,19 @@ name:name,
 image:src
 
 
+
 };
 
 
 }
 
-else{
+else if(
+!result[name].image
+){
 
 
 result[name].image =
 src;
-
-
-}
-
 
 
 }
@@ -117,13 +126,10 @@ src;
 /*
 =================================
 
-텍스트 기반 추출
-
-이름:
-
-형태
+2. 이름: 대사 기반 추출
 
 =================================
+
 */
 
 
@@ -151,8 +157,9 @@ line.match(
 
 
 
+if(!match)
+return;
 
-if(match){
 
 
 const name =
@@ -161,11 +168,14 @@ match[1]
 
 
 
-
-
 if(
-!result[name]
-){
+!name
+)
+return;
+
+
+
+if(!result[name]){
 
 
 result[name]={
@@ -177,11 +187,8 @@ name:name,
 image:""
 
 
+
 };
-
-
-
-}
 
 
 
@@ -197,7 +204,9 @@ image:""
 
 
 
-return result;
+return Object.values(
+result
+);
 
 
 
@@ -214,7 +223,7 @@ return result;
 /*
 =================================
 
-캐릭터명 찾기
+캐릭터 이름 찾기
 
 =================================
 */
@@ -228,14 +237,22 @@ return null;
 
 
 
-
-
-const match =
-text.match(
-/^(.+?)\s*:/
+const lines =
+text.split(
+"\n"
 );
 
 
+
+for(
+let line of lines
+){
+
+
+const match =
+line.match(
+/^(.+?)\s*:\s*/
+);
 
 
 
@@ -249,6 +266,7 @@ return match[1]
 }
 
 
+}
 
 
 
