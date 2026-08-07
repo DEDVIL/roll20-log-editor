@@ -23,7 +23,8 @@ function parseLog(text) {
 
 
     let i = 0;
-
+let htmlBuffer = [];
+let inHTML = false;
 
 
     while(i < lines.length) {
