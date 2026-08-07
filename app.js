@@ -438,64 +438,9 @@ renderStatistics();
 
 function renderCharacters(){
 
-
-
-const box =
-document.querySelector(
-"#characters"
-);
-
-
-
-if(!box)
-return;
-
-
-
-
-
-box.innerHTML="";
-
-
-
-
-
-currentCharacters.forEach(
-character=>{
-
-
-
-box.innerHTML += `
-
-<label class="character-item">
-
-
-<input
-
-type="checkbox"
-
-class="character-check"
-
-value="${character.name}"
-
->
-
-
-${character.name}
-
-
-</label>
-
-`;
-
-
-
-});
-
-
+renderCharacterUI();
 
 }
-
 
 
 
