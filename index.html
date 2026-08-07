@@ -1,97 +1,152 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
+
 <meta charset="UTF-8">
 
 <meta name="viewport"
 content="width=device-width, initial-scale=1.0">
 
-<title>TRPG Log Studio</title>
+
+<title>
+Roll20 Chat Archive
+</title>
+
 
 <link rel="stylesheet" href="style.css">
 
+
 </head>
+
 
 <body>
 
+
 <header class="top">
 
-<h1>TRPG Log Studio</h1>
+
+<h1>
+Roll20 Chat Archive
+</h1>
+
 
 <p>
-Roll20 Chat Archive 정리 도구
+TRPG 로그 정리 · 롤꾸 보존 · PDF / 티스토리 변환
 </p>
 
+
 </header>
+
+
+
 
 
 <div class="layout">
 
 
-<!-- 입력 영역 -->
+
+
+
+<!-- ==================
+     입력 영역
+================== -->
+
 
 <section class="input-area">
 
-<h2>로그 입력</h2>
+
+<h2>
+로그 입력
+</h2>
+
 
 
 <div class="upload-box">
 
-<label>
-로그 파일 열기
+
+<label for="fileInput">
+
+📂 로그 파일 업로드
+
+</label>
+
 
 <input
 type="file"
 id="fileInput"
-accept=".txt,.html"
-hidden>
+hidden
+>
 
-</label>
 
 </div>
+
+
+
 
 
 <textarea
 id="logInput"
 placeholder="
-Roll20 로그를 붙여넣으세요.
+Roll20 채팅 로그를 붙여넣으세요.
+"
+></textarea>
 
-예)
 
-이셴:뭐해?
-위려운:(웃음) 괜찮아요.
-"></textarea>
 
 
 
 <div class="button-group">
 
+
 <button id="parseBtn">
-파싱하기
+
+변환
+
 </button>
 
 
 <button id="cleanBtn">
+
 자동 교정
+
 </button>
 
 
-<button id="removeBtn">
-선택 삭제
-</button>
 
+<button id="copyBtn">
 
-<button id="htmlBtn">
 HTML 복사
+
 </button>
 
 
-<button id="printBtn">
-PDF 저장
+
+<button id="backupBtn">
+
+백업
+
+</button>
+
+
+
+<button id="txtBtn">
+
+TXT 저장
+
+</button>
+
+
+
+<button id="pdfBtn">
+
+PDF
+
 </button>
 
 
 </div>
+
 
 
 </section>
@@ -100,28 +155,44 @@ PDF 저장
 
 
 
-<!-- 미리보기 -->
+
+
+
+
+<!-- ==================
+     로그 화면
+================== -->
+
 
 <section class="viewer">
 
 
 <div class="viewer-header">
 
+
 <h2>
-Preview
+Archive
 </h2>
 
 
-<button id="resetBtn">
-초기화
-</button>
+
+<input
+id="searchInput"
+placeholder="검색..."
+>
+
 
 </div>
 
 
 
-<div id="preview"
-class="log-container">
+
+
+<div
+id="preview"
+class="log-container"
+>
+
 
 <div class="empty">
 
@@ -129,6 +200,7 @@ class="log-container">
 
 </div>
 
+
 </div>
 
 
@@ -139,46 +211,20 @@ class="log-container">
 
 
 
-<!-- 사이드 -->
+
+
+
+
+<!-- ==================
+     통계 영역
+================== -->
+
 
 <aside class="side">
 
 
 <section>
 
-<h3>
-검색
-</h3>
-
-
-<input
-id="searchInput"
-placeholder="검색어">
-
-
-</section>
-
-
-
-
-<section>
-
-<h3>
-캐릭터
-</h3>
-
-
-<div id="characterList">
-
-</div>
-
-
-</section>
-
-
-
-
-<section>
 
 <h3>
 통계
@@ -187,7 +233,7 @@ placeholder="검색어">
 
 <div id="statistics">
 
-아직 분석되지 않았습니다.
+아직 없음
 
 </div>
 
@@ -195,7 +241,39 @@ placeholder="검색어">
 </section>
 
 
+
+
+
+<section>
+
+
+<h3>
+캐릭터
+</h3>
+
+
+<div id="characters">
+
+
+</div>
+
+
+<button id="deleteBtn">
+
+선택 캐릭터 삭제
+
+</button>
+
+
+</section>
+
+
+
 </aside>
+
+
+
+
 
 
 
@@ -205,14 +283,10 @@ placeholder="검색어">
 
 
 
-<!-- HTML 출력 -->
-
-<textarea
-id="htmlOutput"
-hidden>
-</textarea>
 
 
+
+<!-- JS 순서 중요 -->
 
 
 <script src="js/parser.js"></script>
@@ -226,6 +300,7 @@ hidden>
 <script src="js/exporter.js"></script>
 
 <script src="app.js"></script>
+
 
 
 </body>
