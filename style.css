@@ -688,3 +688,198 @@ button:hover {
 
 
   }
+
+/* ======================
+   Character Card
+====================== */
+
+
+.speaker-card {
+
+display:flex;
+
+align-items:center;
+
+gap:12px;
+
+margin-bottom:10px;
+
+}
+
+
+
+.avatar {
+
+width:36px;
+
+height:36px;
+
+border-radius:50%;
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+background:#f0f0f5;
+
+font-size:20px;
+
+}
+
+
+
+
+/* ======================
+   Dialog Upgrade
+====================== */
+
+
+.message {
+
+border-left:
+
+4px solid var(--accent);
+
+}
+
+
+
+.dialog-text {
+
+font-size:15px;
+
+letter-spacing:.02em;
+
+}
+
+
+
+/* ======================
+   Roll Design
+====================== */
+
+
+.roll-design {
+
+
+margin:
+
+30px auto;
+
+
+max-width:
+
+700px;
+
+
+}
+
+
+.roll-design img {
+
+
+display:block;
+
+
+max-width:100%;
+
+
+margin:auto;
+
+
+}
+
+
+
+
+/* ======================
+   Handout Upgrade
+====================== */
+
+
+.handout {
+
+
+background:
+
+linear-gradient(
+135deg,
+#fffdf5,
+#fff
+);
+
+
+box-shadow:
+
+0 8px 20px rgba(0,0,0,.05);
+
+
+}
+
+
+
+.handout-title {
+
+
+text-align:center;
+
+
+font-size:18px;
+
+
+letter-spacing:
+
+4px;
+
+
+}
+
+
+
+
+
+/* ======================
+   Print Design
+====================== */
+
+
+@media print {
+
+
+body {
+
+background:white;
+
+}
+
+
+
+.message {
+
+
+box-shadow:none;
+
+
+break-inside:
+
+avoid;
+
+
+}
+
+
+
+.handout {
+
+
+break-inside:
+
+avoid;
+
+
+}
+
+
+}
