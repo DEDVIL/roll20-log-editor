@@ -1,111 +1,67 @@
 /*
- TRPG Log Studio
+================================
 
- Renderer Module
+Roll20 Archive Renderer
 
- 로그 데이터를 화면으로 출력
+동적 캐릭터 지원
+
+================================
 */
 
 
-// 캐릭터 색상 저장
-
-const characterColors = {};
+function renderAll(){
 
 
-
-const colorPalette = [
-
-    "#6C7AE0",
-    "#E57373",
-    "#81C784",
-    "#FFB74D",
-    "#BA68C8",
-    "#4DB6AC",
-    "#7986CB",
-    "#F06292"
-
-];
+    const preview =
+    document.querySelector(
+        "#preview"
+    );
 
 
-
-let colorIndex = 0;
-
-
-
-
-
-/*
-========================
-
-캐릭터 색상
-
-========================
-*/
-
-
-function getCharacterColor(name){
-
-
-    if(
-        !characterColors[name]
-    ){
-
-        characterColors[name] =
-        colorPalette[
-            colorIndex %
-            colorPalette.length
-        ];
-
-        colorIndex++;
-
-    }
-
-
-    return characterColors[name];
-
-}
-
-
-
-
-
-
-
-/*
-========================
-
-전체 렌더링
-
-========================
-*/
-
-
-function renderLog(data, target){
-
-
-    if(!target)
+    if(!preview)
         return;
 
 
 
-    target.innerHTML="";
+    if(
+        !window.currentData
+        ||
+        currentData.length===0
+    ){
+
+        preview.innerHTML =
+        `
+        <div class="empty">
+        로그를 입력해주세요.
+        </div>
+        `;
+
+
+        return;
+
+    }
 
 
 
-    data.forEach(item=>{
-
-
-        const element =
-        createMessageElement(item);
+    let html="";
 
 
 
-        target.appendChild(element);
+    currentData.forEach(item=>{
+
+
+        html += renderMessage(item);
 
 
     });
 
 
+
+    preview.innerHTML =
+    html;
+
+
+
 }
 
 
@@ -115,153 +71,52 @@ function renderLog(data, target){
 
 
 
+
 /*
-========================
+================================
 
-메시지 생성
+메시지 하나 출력
 
-========================
+================================
 */
 
 
-function createMessageElement(item){
-
-
-    const wrapper =
-    document.createElement("div");
-
-
-
-    wrapper.className =
-    "message";
-
-
+function renderMessage(item){
 
 
 
     /*
-    대사
+    일반 시스템 메시지
 
-    */
-
-
-    if(
-        item.type === "dialog"
-    ){
-
-
-
-        const color =
-        getCharacterColor(
-            item.speaker
-        );
-
-
-
-        wrapper.innerHTML = `
-
-        <div class="speaker"
-        style="
-        color:${color}
-        ">
-
-        ${escapeHTML(item.speaker)}
-
-        </div>
-
-
-        ${
-            item.action
-            ?
-            `
-            <div class="action">
-            (${escapeHTML(item.action)})
-            </div>
-            `
-            :
-            ""
-        }
-
-
-        <div class="dialog-text">
-
-        ${formatText(item.text)}
-
-        </div>
-
-
-        `;
-
-
-    }
-
-
-
-
-
-
-    /*
-    서술
-
-    */
-
-
-    else if(
-        item.type === "narration"
-    ){
-
-
-        wrapper.className =
-        "message narration";
-
-
-        wrapper.innerHTML =
-
-        formatText(item.text);
-
-
-    }
-
-
-
-
-
-
-
-
-    /*
+    예:
+    주사위 결과
+    장소 설명
     핸드아웃
 
     */
 
 
-    else if(
-        item.type === "handout"
+    if(
+        item.type==="system"
+        ||
+        !item.speaker
     ){
 
 
-        wrapper.className =
-        "handout";
+        return `
 
 
-        wrapper.innerHTML = `
+<div class="system-message">
 
 
-        <div class="handout-title">
-
-        ·· HANDOUT ··
-
-        </div>
+${formatRoll20HTML(item.text)}
 
 
-        <div>
-
-        ${formatText(item.text)}
-
-        </div>
+</div>
 
 
-        `;
+`;
+
 
 
     }
@@ -270,185 +125,130 @@ function createMessageElement(item){
 
 
 
-
-
-    /*
-    주사위
-
-    */
-
-
-    else if(
-        item.type === "dice"
-    ){
-
-
-        wrapper.className =
-        "dice-card";
-
-
-        wrapper.innerHTML = `
-
-
-        <div>
-        ✷ 판정 ✷
-        </div>
-
-
-        <div class="dice-result">
-
-        ${formatText(item.text)}
-
-        </div>
-
-
-        `;
-
-
-    }
-
-
-
-
-
-
-
-    /*
-    롤꾸 HTML
-
-    */
-
-
-    else if(
-        item.type === "roll-design"
-    ){
-
-
-        wrapper.className =
-        "roll-design";
-
-
-        wrapper.innerHTML =
-        item.html;
-
-
-    }
-
-
-
-
-
-
-
-    /*
-    구분선
-
-    */
-
-
-    else if(
-        item.type === "divider"
-    ){
-
-
-        wrapper.innerHTML = `
-
-        <hr>
-
-        `;
-
-
-    }
-
-
-
-    return wrapper;
-
-
-}
-
-
-
-
-
-
-
-
-
-
-/*
-========================
-
-검색용 강조
-
-========================
-*/
-
-
-function highlightSearch(
-    keyword
-){
-
-
-    if(!keyword)
-        return;
-
-
-
-    const container =
-    document.querySelector(
-    "#preview"
+    const character =
+    getCharacter(
+        item.speaker
     );
 
 
 
-    const textNodes =
-    getTextNodes(container);
+
+
+    return `
+
+
+<article
+
+class="message-card"
+
+data-character="${item.speaker}"
+
+>
 
 
 
-    textNodes.forEach(node=>{
 
 
-        const text =
-        node.nodeValue;
+<div class="character-header">
 
 
 
-        if(
-            text.includes(keyword)
-        ){
 
 
-            const span =
-            document.createElement(
-            "span"
-            );
+<img
 
 
-            span.className =
-            "highlight";
+class="character-image"
 
 
-            span.innerHTML =
-            text.replace(
-                new RegExp(
-                keyword,
-                "gi"
-                ),
-                `<mark>$&</mark>`
-            );
+src="
+
+${
+
+character.image ||
+
+"images/default-avatar.png"
+
+}
+
+"
 
 
-            node.parentNode.replaceChild(
-                span,
-                node
-            );
+onerror="
 
-        }
+this.src='images/default-avatar.png'
+
+"
 
 
-    });
+>
+
+
+
+
+<div class="character-meta">
+
+
+
+<div
+
+class="character-name"
+
+style="
+
+color:${character.color}
+
+"
+
+>
+
+${item.speaker}
+
+</div>
+
+
+
+<div class="character-role">
+
+${character.role}
+
+</div>
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="message-body">
+
+
+${
+
+formatRoll20HTML(
+    item.text
+)
+
+}
+
+
+</div>
+
+
+
+
+</article>
+
+
+`;
+
 
 
 }
@@ -462,15 +262,16 @@ function highlightSearch(
 
 
 /*
-========================
+================================
 
-HTML 보호
+Roll20 꾸밈 보존 처리
 
-========================
+================================
+
 */
 
 
-function escapeHTML(text){
+function formatRoll20HTML(text){
 
 
     if(!text)
@@ -479,50 +280,19 @@ function escapeHTML(text){
 
 
     return text
-    .replace(
-        /&/g,
-        "&amp;"
-    )
-    .replace(
-        /</g,
-        "&lt;"
-    )
-    .replace(
-        />/g,
-        "&gt;"
-    );
 
-}
+    // 줄바꿈 유지
 
-
-
-
-
-
-
-
-/*
-========================
-
-줄바꿈 처리
-
-========================
-*/
-
-
-function formatText(text){
-
-
-    if(!text)
-        return "";
-
-
-
-    return escapeHTML(text)
     .replace(
         /\n/g,
         "<br>"
-    );
+    )
+
+
+
+    // 점삼육 교정 전 임시 보존
+
+    ;
 
 
 }
@@ -534,44 +304,110 @@ function formatText(text){
 
 
 
+
 /*
-========================
+================================
 
-텍스트 노드 찾기
+검색
 
-========================
+================================
+
 */
 
 
-function getTextNodes(element){
+function searchMessages(keyword){
 
 
-    const nodes=[];
-
-
-
-    const walker =
-    document.createTreeWalker(
-        element,
-        NodeFilter.SHOW_TEXT
+    const cards =
+    document.querySelectorAll(
+        ".message-card"
     );
 
 
 
-    let node;
+    cards.forEach(card=>{
+
+
+        if(
+            card.innerText
+            .includes(keyword)
+        ){
+
+            card.style.display=
+            "";
+
+
+        }
+
+        else{
+
+
+            card.style.display=
+            "none";
+
+
+        }
+
+
+    });
+
+
+}
 
 
 
-    while(
-        node = walker.nextNode()
-    ){
-
-        nodes.push(node);
-
-    }
 
 
 
-    return nodes;
+
+
+
+/*
+================================
+
+캐릭터별 필터
+
+================================
+
+*/
+
+
+function filterCharacter(name){
+
+
+
+    const cards =
+    document.querySelectorAll(
+        ".message-card"
+    );
+
+
+
+    cards.forEach(card=>{
+
+
+        if(
+            card.dataset.character
+            ===
+            name
+        ){
+
+
+            card.style.display="";
+
+
+        }
+
+        else{
+
+
+            card.style.display="none";
+
+
+        }
+
+
+    });
+
 
 }
