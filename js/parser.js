@@ -1,7 +1,7 @@
 /*
-=================================
+TRPG Log Studio
 
-Roll20 Chat Parser
+Chat Parser
 
 =================================
 */
@@ -15,33 +15,47 @@ function parseLog(raw){
 
 
 
-    /*
-    HTML 로그 감지
 
+    /*
+    HTML 로그
     */
 
- let originalHTML=null;
+
+    if(
+        /<[^>]+>/.test(raw)
+    ){
 
 
-if(
- /<[^>]+>/.test(raw)
-){
-
-
- originalHTML =
- parseRoll20HTML(raw);
-
-
-}
+        const parsed =
+        parseRoll20HTML(raw);
 
 
 
+        if(
+            parsed &&
+            parsed.messages
+        ){
+
+            return parsed.messages;
+
+        }
+
+
+    }
+
+
+
+
+
+
+
+    /*
+    일반 텍스트 로그
+    */
 
 
     raw =
     normalizeInput(raw);
-
-
 
 
 
@@ -52,7 +66,6 @@ if(
 
 
     const result=[];
-
 
 
     let current=null;
@@ -70,25 +83,12 @@ if(
 
 
         if(
-            line.length===0
+            !line
         )
-        {
-
             return;
 
-        }
 
 
-
-
-
-        /*
-        캐릭터 대사 판별
-
-        이름:
-        형태
-
-        */
 
 
         const match =
@@ -115,19 +115,21 @@ if(
 
 
 
+
             current={
 
 
                 type:"dialog",
 
 
-                speaker:speaker,
+                speaker,
 
 
-                text:text
+                text,
 
-html:
-originalHTML
+
+                html:""
+
 
             };
 
@@ -138,21 +140,12 @@ originalHTML
             );
 
 
-
         }
 
         else{
 
 
-            /*
-            이전 대사 이어쓰기
-
-            */
-
-
-            if(
-                current
-            ){
+            if(current){
 
 
                 current.text +=
@@ -163,7 +156,6 @@ originalHTML
 
             }
 
-
             else{
 
 
@@ -173,7 +165,9 @@ originalHTML
 
                     speaker:"",
 
-                    text:line
+                    text:line,
+
+                    html:""
 
                 });
 
@@ -181,10 +175,7 @@ originalHTML
             }
 
 
-
         }
-
-
 
 
     });
@@ -196,6 +187,7 @@ originalHTML
     return result;
 
 
+
 }
 
 
@@ -205,14 +197,10 @@ originalHTML
 
 
 
-
 /*
-=================================
-
-HTML → 텍스트 변환
+HTML → 텍스트
 
 =================================
-
 */
 
 
@@ -244,24 +232,20 @@ function convertHTMLToText(html){
 
 
 
-
 /*
-=================================
-
 입력 정리
 
-=================================
+HTML 보호 때문에
+최소 처리
 
+=================================
 */
 
 
 function normalizeInput(text){
 
 
-
     return text
-
-    // 윈도우 개행 통일
 
     .replace(
         /\r/g,
@@ -269,25 +253,9 @@ function normalizeInput(text){
     )
 
 
-    // Roll20 숨김 메시지 제거
-
     .replace(
-
-        /This message has been hidden\./gi,
-
-        ""
-
-    )
-
-
-    // 빈 줄 정리
-
-    .replace(
-
         /\n{3,}/g,
-
         "\n\n"
-
     );
 
 
@@ -300,19 +268,14 @@ function normalizeInput(text){
 
 
 
-
 /*
-=================================
-
 캐릭터명 정리
 
 =================================
-
 */
 
 
 function cleanName(name){
-
 
 
     return name
@@ -322,8 +285,8 @@ function cleanName(name){
         " "
     )
 
-    .trim();
 
+    .trim();
 
 
 }
