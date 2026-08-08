@@ -1,0 +1,56 @@
+/* =========================================================
+   채록 · print.css
+   PDF 저장(브라우저 인쇄)용 스타일 — 종이 위 가독성 우선
+   ========================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=Pretendard:wght@400;600;700&display=swap');
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: #ffffff;
+  color: #1C1A22;
+  font-family: 'Pretendard', 'Malgun Gothic', sans-serif;
+  font-size: 13.5px;
+  line-height: 1.75;
+}
+
+.print-page { max-width: 720px; margin: 0 auto; padding: 28px 6px; }
+
+/* 표지 */
+.exp-cover {
+  text-align: center;
+  padding: 100px 20px 60px;
+  page-break-after: always;
+  break-after: page;
+}
+.exp-cover-title {
+  font-family: 'Noto Serif KR', serif; font-weight: 700; font-size: 30px;
+  color: #17151F; margin-bottom: 10px;
+}
+.exp-cover-subtitle { font-size: 15px; color: #4B4658; margin-bottom: 36px; }
+.exp-cover-meta { font-size: 12.5px; color: #6B6578; display: flex; flex-direction: column; gap: 4px; }
+
+/* 메시지 */
+.exp-msg {
+  border: 1px solid #E7E3DC; border-radius: 8px; padding: 9px 13px; margin: 0 0 9px;
+  break-inside: avoid;
+}
+.exp-msg--system { border: none; text-align: center; opacity: .6; font-size: 11px; padding: 3px; }
+.exp-head { font-size: 11px; margin-bottom: 3px; color: #6B6578; }
+.exp-speaker { font-weight: 700; margin-right: 6px; }
+.exp-type { font-size: 10px; opacity: .7; }
+.exp-whisper { font-size: 10px; opacity: .7; margin-left: 6px; }
+.exp-body { color: #201D28; word-break: break-word; }
+.exp-body img { max-width: 100%; border-radius: 4px; }
+
+@page {
+  size: A4;
+  margin: 22mm 16mm;
+}
+
+@media print {
+  body { font-size: 12.5px; }
+  .exp-msg { box-shadow: none; }
+}
